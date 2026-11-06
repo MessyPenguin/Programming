@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en" class="dark">
+<!-- ... existing code ... -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Year 11 Python Programming Fundamentals Practice Set</title>
+    <title>Year 11 GCSE Computer Science — Python One-Stop Shop & Parsons Hub</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -32,25 +31,14 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Custom scrollbar for dark IDE aesthetic */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e1e1e;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3e3e42;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555555;
-        }
-        
-        .code-line:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1e1e1e; }
+        ::-webkit-scrollbar-thumb { background: #3e3e42; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555555; }
+        .code-line:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .parsons-item { cursor: grab; user-select: none; }
+        .parsons-item:active { cursor: grabbing; }
+        .parsons-target-zone { min-height: 260px; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col">
@@ -60,14 +48,30 @@
         <div class="flex items-center space-x-3">
             <i class="fa-brands fa-python text-amber-400 text-3xl"></i>
             <div>
-                <h1 class="font-bold text-lg leading-tight tracking-wide text-slate-100">Year 11 Computer Science: Python Fundamentals</h1>
-                <p class="text-xs text-slate-400">Interactive Revision & Self-Assessment Module</p>
+                <h1 class="font-bold text-lg leading-tight tracking-wide text-slate-100">Python One-Stop Shop & Parsons Hub</h1>
+                <p class="text-xs text-slate-400">Year 11 GCSE Computer Science Revision & Practice Platform</p>
             </div>
         </div>
 
         <div class="flex items-center space-x-6 mt-2 sm:mt-0">
+            <!-- Navigation Tabs -->
+            <div class="flex bg-slate-900 p-1 rounded-lg border border-slate-800 text-xs font-semibold">
+                <button id="navTabPractice" onclick="switchView('practice')" class="px-3 py-1.5 rounded-md bg-blue-600 text-white transition">
+                    <i class="fa-solid fa-layer-group mr-1.5"></i>Practice Modules
+                </button>
+                <button id="navTabParsons" onclick="switchView('parsons')" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-puzzle-piece mr-1.5"></i>Parsons Problems
+                </button>
+                <button id="navTabTutorials" onclick="switchView('tutorials')" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-book-open mr-1.5"></i>Tutorials
+                </button>
+                <button id="navTabSandbox" onclick="switchView('sandbox')" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-terminal mr-1.5"></i>Python Sandbox
+                </button>
+            </div>
+
             <!-- Overall Progress Bar -->
-            <div class="flex flex-col w-36 sm:w-48">
+            <div class="hidden xl:flex flex-col w-36">
                 <div class="flex justify-between text-xs text-slate-300 mb-1">
                     <span>Progress</span>
                     <span id="overallScoreText">0 / 0 (0%)</span>
@@ -80,7 +84,7 @@
             <!-- Teacher Reset Button -->
             <button onclick="resetAllProgress()" title="Reset session score and answers" class="bg-slate-800 hover:bg-rose-950 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-700 text-xs px-3 py-1.5 rounded transition flex items-center gap-1.5">
                 <i class="fa-solid fa-rotate-left"></i>
-                <span>Reset Progress</span>
+                <span class="hidden md:inline">Reset Progress</span>
             </button>
         </div>
     </header>
@@ -88,755 +92,506 @@
     <!-- Main App Container -->
     <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
 
-        <!-- Sidebar Navigation (Modules) -->
-        <aside class="w-full md:w-72 bg-ideSidebar border-r border-slate-800 flex-shrink-0 flex flex-col">
-            <div class="p-3 uppercase text-xs font-semibold text-slate-400 tracking-wider border-b border-slate-800">
-                Practice Modules
-            </div>
-            <nav id="moduleNav" class="flex-1 overflow-y-auto p-2 space-y-1">
-                <!-- Nav items rendered dynamically via Javascript -->
-            </nav>
-            <div class="p-3 bg-slate-900 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
-                <span>GCSE J277 / 8525 Prep</span>
-                <span class="bg-blue-900/60 text-blue-300 px-2 py-0.5 rounded text-[10px] font-mono border border-blue-700/50">Python 3.x</span>
-            </div>
-        </aside>
+        <!-- VIEW 1: PRACTICE MODULES -->
+        <div id="viewPractice" class="flex-1 flex flex-col md:flex-row w-full">
+            <!-- Sidebar Navigation -->
+            <aside class="w-full md:w-72 bg-ideSidebar border-r border-slate-800 flex-shrink-0 flex flex-col">
+                <div class="p-3 uppercase text-xs font-semibold text-slate-400 tracking-wider border-b border-slate-800">
+                    Practice Modules
+                </div>
+                <nav id="moduleNav" class="flex-1 overflow-y-auto p-2 space-y-1">
+                    <!-- Nav items rendered dynamically -->
+                </nav>
+                <div class="p-3 bg-slate-900 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+                    <span>GCSE J277 / 8525</span>
+                    <span class="bg-blue-900/60 text-blue-300 px-2 py-0.5 rounded text-[10px] font-mono border border-blue-700/50">Python 3.x</span>
+                </div>
+            </aside>
 
-        <!-- Main Content Editor Area -->
-        <main class="flex-1 bg-ideEditor overflow-y-auto p-4 md:p-8 flex flex-col items-center">
-            <div class="w-full max-w-4xl space-y-6">
-
-                <!-- Module Title Banner -->
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                    <div>
-                        <span id="moduleBadge" class="inline-block bg-blue-900/40 text-blue-400 border border-blue-800 text-xs font-mono px-2.5 py-0.5 rounded-md mb-2">
-                            Module 1
-                        </span>
-                        <h2 id="moduleTitle" class="text-2xl font-bold text-slate-100">Loading Module...</h2>
-                        <p id="moduleDesc" class="text-sm text-slate-400 mt-1">Select a module to begin practicing.</p>
-                    </div>
-                    <div class="flex items-center gap-3 bg-slate-950 px-4 py-3 rounded-lg border border-slate-800 self-start sm:self-auto">
-                        <i class="fa-solid fa-trophy text-amber-400 text-xl"></i>
+            <!-- Main Content Area -->
+            <main class="flex-1 bg-ideEditor overflow-y-auto p-4 md:p-8 flex flex-col items-center">
+                <div class="w-full max-w-4xl space-y-6">
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                         <div>
-                            <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Module Score</div>
-                            <div id="moduleScoreText" class="text-base font-mono font-bold text-emerald-400">0 / 0</div>
+                            <span id="moduleBadge" class="inline-block bg-blue-900/40 text-blue-400 border border-blue-800 text-xs font-mono px-2.5 py-0.5 rounded-md mb-2">Module 1</span>
+                            <h2 id="moduleTitle" class="text-2xl font-bold text-slate-100">Loading Module...</h2>
+                            <p id="moduleDesc" class="text-sm text-slate-400 mt-1">Select a module to begin practicing.</p>
+                        </div>
+                        <div class="flex items-center gap-3 bg-slate-950 px-4 py-3 rounded-lg border border-slate-800 self-start sm:self-auto">
+                            <i class="fa-solid fa-trophy text-amber-400 text-xl"></i>
+                            <div>
+                                <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Module Score</div>
+                                <div id="moduleScoreText" class="text-base font-mono font-bold text-emerald-400">0 / 0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="questionsContainer" class="space-y-6"></div>
+
+                    <div id="moduleCompleteCard" class="hidden bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-500/30 rounded-xl p-6 text-center space-y-3">
+                        <div class="w-12 h-12 bg-emerald-900/50 border border-emerald-500/50 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-emerald-300">Module Completed!</h3>
+                        <p class="text-sm text-slate-300 max-w-md mx-auto">Great work! Move on to the next section or try Parsons problems.</p>
+                        <button onclick="navigateNextModule()" class="mt-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-lg font-medium text-sm transition shadow-lg shadow-emerald-900/30">
+                            Next Module <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- VIEW 2: PARSONS PROBLEMS HUB -->
+        <div id="viewParsons" class="hidden flex-1 flex flex-col md:flex-row w-full bg-ideEditor overflow-y-auto p-4 md:p-8">
+            <div class="w-full max-w-6xl mx-auto space-y-6">
+                <!-- Header Banner -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <span class="inline-block bg-amber-900/40 text-amber-400 border border-amber-800 text-xs font-mono px-2.5 py-0.5 rounded-md mb-2">Algorithm Assembly</span>
+                        <h2 class="text-2xl font-bold text-slate-100">🧩 Interactive Parsons Problems</h2>
+                        <p class="text-sm text-slate-400 mt-1">Drag or click code blocks into your solution area. Use the indent controls to structure Python indentation correctly.</p>
+                    </div>
+                    <!-- Task Selector -->
+                    <select id="parsonsTaskSelector" onchange="loadParsonsProblem(this.value)" class="bg-slate-950 border border-slate-700 text-slate-200 text-sm rounded-lg p-2.5 font-mono focus:border-amber-500 outline-none">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Problem Mechanics Workspace -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Source Bank -->
+                    <div class="bg-ideSidebar border border-slate-800 rounded-xl p-5 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-boxes-stacked text-amber-400"></i> Available Code Blocks
+                            </h3>
+                            <span class="text-xs text-slate-500">Click block to move right</span>
+                        </div>
+                        <div id="parsonsSource" class="parsons-target-zone space-y-2 bg-ideBg border border-slate-800/80 rounded-lg p-3 overflow-y-auto">
+                            <!-- Blocks rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Target Solution Area -->
+                    <div class="bg-ideSidebar border border-slate-800 rounded-xl p-5 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-code text-emerald-400"></i> Your Solution & Indentation
+                            </h3>
+                            <button onclick="checkParsonsSolution()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs px-4 py-1.5 rounded-lg transition shadow-md shadow-emerald-900/30 flex items-center gap-1.5">
+                                <i class="fa-solid fa-play"></i> Verify Solution
+                            </button>
+                        </div>
+                        <div id="parsonsTarget" class="parsons-target-zone space-y-2 bg-ideBg border border-slate-800/80 rounded-lg p-3 overflow-y-auto">
+                            <!-- Solution lines added here -->
                         </div>
                     </div>
                 </div>
 
-                <!-- Questions Container -->
-                <div id="questionsContainer" class="space-y-6">
-                    <!-- Dynamic Questions Injected Here -->
+                <!-- Parsons Verification Feedback -->
+                <div id="parsonsFeedback" class="hidden p-4 rounded-xl border text-sm leading-relaxed"></div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: TUTORIALS HUB -->
+        <div id="viewTutorials" class="hidden flex-1 bg-ideEditor overflow-y-auto p-4 md:p-8">
+            <div class="w-full max-w-5xl mx-auto space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg">
+                    <h2 class="text-2xl font-bold text-slate-100"><i class="fa-solid fa-book-open text-blue-400 mr-2"></i>Python Core Tutorials</h2>
+                    <p class="text-sm text-slate-400 mt-1">Comprehensive notes with runnable examples covering GCSE Computer Science specification topics.</p>
                 </div>
 
-                <!-- Module Complete Banner (Hidden by default) -->
-                <div id="moduleCompleteCard" class="hidden bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-500/30 rounded-xl p-6 text-center space-y-3">
-                    <div class="w-12 h-12 bg-emerald-900/50 border border-emerald-500/50 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl">
-                        <i class="fa-solid fa-check"></i>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="tutorialsGrid">
+                    <!-- Dynamic Tutorials Cards rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 4: PYTHON SANDBOX -->
+        <div id="viewSandbox" class="hidden flex-1 bg-ideEditor overflow-y-auto p-4 md:p-8 flex flex-col items-center">
+            <div class="w-full max-w-4xl space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-terminal text-emerald-400"></i> Live Python Simulator
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Test small scripts, variables, print statements, and basic loop constructs in real-time.</p>
                     </div>
-                    <h3 class="text-xl font-bold text-emerald-300">Module Completed!</h3>
-                    <p class="text-sm text-slate-300 max-w-md mx-auto">Great work! You have finished all questions in this section. Move on to the next module using the sidebar.</p>
-                    <button onclick="navigateNextModule()" class="mt-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-lg font-medium text-sm transition shadow-lg shadow-emerald-900/30">
-                        Next Module <i class="fa-solid fa-arrow-right ml-1"></i>
+                    <button onclick="runSandboxCode()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm px-5 py-2 rounded-lg transition shadow-md shadow-emerald-900/30 flex items-center gap-2">
+                        <i class="fa-solid fa-play"></i> Run Code
                     </button>
                 </div>
 
-            </div>
-        </main>
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Editor Box -->
+                    <div class="bg-ideSidebar border border-slate-800 rounded-xl p-4 space-y-2">
+                        <div class="flex justify-between items-center text-xs text-slate-400 font-mono">
+                            <span>main.py</span>
+                            <span>Python 3 Interpreter</span>
+                        </div>
+                        <textarea id="sandboxEditor" rows="10" class="w-full bg-ideBg border border-slate-800 rounded-lg p-3 font-mono text-sm text-emerald-400 focus:outline-none focus:border-blue-500 leading-relaxed" placeholder="Type Python code here...&#10;print('Hello World!')"></textarea>
+                    </div>
 
-    </div>
-
-    <!-- Feedback / Solution Modal -->
-    <div id="hintModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-700 rounded-xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 id="modalTitle" class="font-bold text-lg text-amber-400 flex items-center gap-2">
-                    <i class="fa-solid fa-lightbulb"></i> <span>Hint & Solution</span>
-                </h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-white text-xl">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div id="modalBody" class="text-sm text-slate-300 space-y-3">
-                <!-- Modal content dynamically injected -->
-            </div>
-            <div class="pt-3 border-t border-slate-800 text-right">
-                <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-1.5 rounded-lg text-sm transition">
-                    Got it
-                </button>
+                    <!-- Terminal Output Box -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+                        <div class="flex justify-between items-center text-xs text-slate-400 font-mono border-b border-slate-800 pb-2">
+                            <span>Console Output:</span>
+                            <button onclick="clearSandboxConsole()" class="hover:text-slate-200"><i class="fa-solid fa-trash-can mr-1"></i>Clear</button>
+                        </div>
+                        <pre id="sandboxConsole" class="font-mono text-xs text-slate-200 min-h-[120px] max-h-[220px] overflow-y-auto whitespace-pre-wrap leading-relaxed">System ready. Click "Run Code" to execute script.</pre>
+                    </div>
+                </div>
             </div>
         </div>
+
     </div>
 
-    <!-- JavaScript Data and Application Logic -->
+    <!-- ... existing Modal and Scripts ... -->
     <script>
-        // DATA STRUCTURE FOR MODULES & QUESTIONS
-        const modulesData = [
+        // --- PARSONS PROBLEMS DATA SET ---
+        const parsonsTasks = [
             {
-                id: "mod1",
-                title: "1. Sequence & Data Types",
-                badge: "Module 1",
-                desc: "Master execution order, variable declarations, type casting, and string/integer conversions.",
-                questions: [
-                    {
-                        id: "m1_q1",
-                        type: "mcq",
-                        title: "1.1 Variable Casting and Sequence",
-                        prompt: "Examine the snippet below. What value will be printed by the final line?",
-                        code: `x = "10"\ny = "20"\ntotal = int(x) + int(y)\nprint(total)`,
-                        options: [
-                            { text: `"1020" (String concatenation)`, correct: false },
-                            { text: `30 (Integer addition)`, correct: true },
-                            { text: `TypeError (Cannot add strings and integers)`, correct: false },
-                            { text: `30.0 (Float value)`, correct: false }
-                        ],
-                        explanation: "`int(x)` converts '10' to 10 and `int(y)` converts '20' to 20. Adding two integers performs mathematical addition (10 + 20 = 30)."
-                    },
-                    {
-                        id: "m1_q2",
-                        type: "fill_blank",
-                        title: "1.2 Fixing Reordered Code (Sequence)",
-                        prompt: "The code below needs to calculate total bill with tax. Fill in the missing token to correctly cast the user input to a decimal number.",
-                        code: `# Read input and convert to decimal number\nprice = ???(input("Enter original price: "))\ntax = price * 0.20\ntotal = price + tax\nprint("Final Total:", total)`,
-                        answers: ["float"],
-                        placeholder: "e.g. int or float",
-                        explanation: "We use `float()` to cast user input into a floating-point (decimal) number so prices like 12.50 can be calculated accurately."
-                    },
-                    {
-                        id: "m1_q3",
-                        type: "predict_output",
-                        title: "1.3 Tracing Output",
-                        prompt: "What exact text will be displayed in the terminal when this code executes?",
-                        code: `a = 5\nb = 2\nc = a ** b\nprint("Result:", c)`,
-                        expected: "Result: 25",
-                        caseSensitive: true,
-                        hint: "In Python, `**` is the exponentiation (power of) operator. 5 to the power of 2 is 25.",
-                        explanation: "The `**` operator raises 5 to the power of 2, giving 25. The print statement joins 'Result:' and 25 with a space."
-                    }
+                id: "p1",
+                title: "1. High-Low Guessing Game",
+                desc: "Reorder the blocks to build a game that generates a random secret number (1-100), loops until guessed correctly, and prints feedback.",
+                blocks: [
+                    { id: "b1", code: "import random", indent: 0 },
+                    { id: "b2", code: "secret = random.randint(1, 100)", indent: 0 },
+                    { id: "b3", code: "guess = 0", indent: 0 },
+                    { id: "b4", code: "while guess != secret:", indent: 0 },
+                    { id: "b5", code: "guess = int(input('Guess: '))", indent: 1 },
+                    { id: "b6", code: "if guess < secret:", indent: 1 },
+                    { id: "b7", code: "print('Too Low!')", indent: 2 },
+                    { id: "b8", code: "elif guess > secret:", indent: 1 },
+                    { id: "b9", code: "print('Too High!')", indent: 2 },
+                    { id: "b10", code: "print('Correct!')", indent: 0 }
                 ]
             },
             {
-                id: "mod2",
-                title: "2. Selection & Relational Operators",
-                badge: "Module 2",
-                desc: "Practice working with if, elif, else branches and logical/relational operators (==, !=, >=, <=).",
-                questions: [
-                    {
-                        id: "m2_q1",
-                        type: "mcq",
-                        title: "2.1 Relational Operator Logic",
-                        prompt: "Given `score = 75` and `attendance = 90`, which of the following conditions evaluates to True?",
-                        code: `score = 75\nattendance = 90`,
-                        options: [
-                            { text: `score >= 80 or attendance < 85`, correct: false },
-                            { text: `score == 75 and attendance != 90`, correct: false },
-                            { text: `not (score < 50) and attendance >= 90`, correct: true },
-                            { text: `score > 75 or attendance > 95`, correct: false }
-                        ],
-                        explanation: "`score < 50` is False, so `not (False)` becomes True. `attendance >= 90` is also True. True and True evaluates to True."
-                    },
-                    {
-                        id: "m2_q2",
-                        type: "fill_blank",
-                        title: "2.2 Theme Park Ticket Classifier",
-                        prompt: "Complete the conditional statement so that teenagers aged 13 up to 17 (inclusive) receive a child ticket.",
-                        code: `age = int(input("Enter age: "))\n\nif age < 13:\n    category = "Child"\nelif age ??? 17:\n    category = "Teenager"\nelse:\n    category = "Adult"`,
-                        answers: ["<=", "<= 17"],
-                        placeholder: "e.g. <=",
-                        explanation: "Using `<=` checks if the age is less than or equal to 17."
-                    },
-                    {
-                        id: "m2_q3",
-                        type: "bug_spotter",
-                        title: "2.3 Debugging Selection Syntax",
-                        prompt: "Click on the line of code that contains a syntax error.",
-                        lines: [
-                            { text: 'user_pass = input("Enter password: ")', isBug: false },
-                            { text: 'if user_pass == "admin123"', isBug: true, reason: "Missing colon `:` at the end of the `if` statement!" },
-                            { text: '    print("Access Granted!")', isBug: false },
-                            { text: 'else:', isBug: false },
-                            { text: '    print("Access Denied")', isBug: false }
-                        ],
-                        explanation: "Every `if`, `elif`, and `else` line in Python must end with a colon `:`."
-                    }
+                id: "p2",
+                title: "2. Linear Search Algorithm",
+                desc: "Construct a linear search function that iterates through a list to find a target value and returns its index or -1.",
+                blocks: [
+                    { id: "b1", code: "def linear_search(arr, target):", indent: 0 },
+                    { id: "b2", code: "for i in range(len(arr)):", indent: 1 },
+                    { id: "b3", code: "if arr[i] == target:", indent: 2 },
+                    { id: "b4", code: "return i", indent: 3 },
+                    { id: "b5", code: "return -1", indent: 1 }
                 ]
             },
             {
-                id: "mod3",
-                title: "3. Iteration (For & While Loops)",
-                badge: "Module 3",
-                desc: "Master count-controlled (for) and condition-controlled (while) loops along with range() boundaries.",
-                questions: [
-                    {
-                        id: "m3_q1",
-                        type: "predict_output",
-                        title: "3.1 Range Boundary Check",
-                        prompt: "How many total lines of output will this `for` loop print?",
-                        code: `for i in range(1, 6):\n    print("Iteration:", i)`,
-                        expected: "5",
-                        caseSensitive: false,
-                        hint: "`range(1, 6)` starts at 1 and stops BEFORE 6 (generating values: 1, 2, 3, 4, 5).",
-                        explanation: "`range(1, 6)` produces 5 numbers: 1, 2, 3, 4, and 5. Therefore, the loop runs 5 times."
-                    },
-                    {
-                        id: "m3_q2",
-                        type: "fill_blank",
-                        title: "3.2 Fixing an Infinite While Loop",
-                        prompt: "Fill in the blank so the while loop terminates when the secret number (7) is guessed.",
-                        code: `secret = 7\nguess = int(input("Guess number: "))\n\n# Loop while guess is NOT equal to secret\nwhile guess ??? secret:\n    print("Wrong! Try again.")\n    guess = int(input("Guess number: "))\n\nprint("Correct!")`,
-                        answers: ["!=", "!= secret"],
-                        placeholder: "operator",
-                        explanation: "`!=` means 'not equal to'. The loop continues asking as long as the user's guess is not equal to 7."
-                    },
-                    {
-                        id: "m3_q3",
-                        type: "bug_spotter",
-                        title: "3.3 Accumulator Pattern Bug",
-                        prompt: "Click on the line causing a logical error where the total score is reset inside the loop.",
-                        lines: [
-                            { text: 'scores = [10, 20, 30]', isBug: false },
-                            { text: 'for score in scores:', isBug: false },
-                            { text: '    total = 0', isBug: true, reason: "`total = 0` should be declared OUTSIDE the loop. Resetting it inside wipes previous totals every iteration!" },
-                            { text: '    total = total + score', isBug: false },
-                            { text: 'print("Sum:", total)', isBug: false }
-                        ],
-                        explanation: "Initializing `total = 0` inside the loop causes it to reset back to zero on every iteration, failing to accumulate the sum."
-                    }
+                id: "p3",
+                title: "3. Find Maximum Value in List",
+                desc: "Assemble code that iterates through a list of numbers and returns the largest element.",
+                blocks: [
+                    { id: "b1", code: "numbers = [14, 52, 88, 31, 95, 42]", indent: 0 },
+                    { id: "b2", code: "highest = numbers[0]", indent: 0 },
+                    { id: "b3", code: "for num in numbers:", indent: 0 },
+                    { id: "b4", code: "if num > highest:", indent: 1 },
+                    { id: "b5", code: "highest = num", indent: 2 },
+                    { id: "b6", code: "print('Highest score:', highest)", indent: 0 }
                 ]
             },
             {
-                id: "mod4",
-                title: "4. Lists & 1D Arrays",
-                badge: "Module 4",
-                desc: "Work with zero-based indexing, list appending, element deletion, and list length functions.",
-                questions: [
-                    {
-                        id: "m4_q1",
-                        type: "mcq",
-                        title: "4.1 Zero-Based Index Lookup",
-                        prompt: "Given `colors = ['Red', 'Green', 'Blue', 'Yellow']`, what does `colors[2]` evaluate to?",
-                        code: `colors = ["Red", "Green", "Blue", "Yellow"]\nprint(colors[2])`,
-                        options: [
-                            { text: `"Red"`, correct: false },
-                            { text: `"Green"`, correct: false },
-                            { text: `"Blue"`, correct: true },
-                            { text: `"Yellow"`, correct: false }
-                        ],
-                        explanation: "Lists are 0-indexed: index 0 is 'Red', index 1 is 'Green', index 2 is 'Blue'."
-                    },
-                    {
-                        id: "m4_q2",
-                        type: "fill_blank",
-                        title: "4.2 Appending List Items",
-                        prompt: "Fill in the missing list method name to add 'Python' to the programming languages list.",
-                        code: `languages = ["HTML", "CSS"]\nlanguages.???("Python")\nprint(len(languages)) # Outputs 3`,
-                        answers: ["append"],
-                        placeholder: "method name",
-                        explanation: "The `.append(item)` method adds a new element to the end of a list."
-                    },
-                    {
-                        id: "m4_q3",
-                        type: "predict_output",
-                        title: "4.3 List Modification Output",
-                        prompt: "What exact string output will be printed after `pop()` removes an element?",
-                        code: `items = ["A", "B", "C", "D"]\nitems.pop(1)\nprint(items[1])`,
-                        expected: "C",
-                        caseSensitive: true,
-                        hint: "`pop(1)` removes the item at index 1 ('B'). What item moves into index 1 afterwards?",
-                        explanation: "Original list: ['A', 'B', 'C', 'D']. After `pop(1)` removes 'B', the remaining list is ['A', 'C', 'D']. Now `items[1]` is 'C'."
-                    }
+                id: "p4",
+                title: "4. Calculate Average Score",
+                desc: "Order code to total a list of test marks and calculate the average score.",
+                blocks: [
+                    { id: "b1", code: "marks = [65, 70, 85, 90]", indent: 0 },
+                    { id: "b2", code: "total = 0", indent: 0 },
+                    { id: "b3", code: "for m in marks:", indent: 0 },
+                    { id: "b4", code: "total = total + m", indent: 1 },
+                    { id: "b5", code: "avg = total / len(marks)", indent: 0 },
+                    { id: "b6", code: "print('Average mark:', avg)", indent: 0 }
                 ]
             },
             {
-                id: "mod5",
-                title: "5. String Manipulation",
-                badge: "Module 5",
-                desc: "Practice string slicing [start:stop], uppercase/lowercase conversion, and character counts.",
-                questions: [
-                    {
-                        id: "m5_q1",
-                        type: "predict_output",
-                        title: "5.1 String Slicing [start:stop]",
-                        prompt: "What will be printed by the slice `text[0:4]`?",
-                        code: `text = "Computer Science"\nprint(text[0:4])`,
-                        expected: "Comp",
-                        caseSensitive: true,
-                        hint: "Slicing starts at index 0 and stops BEFORE index 4 (indices 0, 1, 2, 3).",
-                        explanation: "Indices 0, 1, 2, 3 correspond to 'C', 'o', 'm', 'p'."
-                    },
-                    {
-                        id: "m5_q2",
-                        type: "fill_blank",
-                        title: "5.2 Case Normalization",
-                        prompt: "Fill in the missing method to convert user input into lowercase characters for safe comparison.",
-                        code: `answer = input("Continue? (yes/no): ")\nclean_answer = answer.???()\nif clean_answer == "yes":\n    print("Proceeding...")`,
-                        answers: ["lower", "lower()"],
-                        placeholder: "e.g. lower()",
-                        explanation: "The `.lower()` method converts all letters in a string to lowercase."
-                    },
-                    {
-                        id: "m5_q3",
-                        type: "bug_spotter",
-                        title: "5.3 Concatenation Type Bug",
-                        prompt: "Click on the line causing a TypeError when generating a profile string.",
-                        lines: [
-                            { text: 'name = "Alex"', isBug: false },
-                            { text: 'age = 16', isBug: false },
-                            { text: 'msg = name + " is " + age + " years old"', isBug: true, reason: "Cannot concatenate a string (`str`) and integer (`age = 16`). Must cast with `str(age)`!" },
-                            { text: 'print(msg)', isBug: false }
-                        ],
-                        explanation: "In Python, you cannot directly concatenate strings with numbers. `age` must be converted using `str(age)`."
-                    }
+                id: "p5",
+                title: "5. Password Authenticator",
+                desc: "Create a loop that prompts for a password until the correct entry 'python123' is provided.",
+                blocks: [
+                    { id: "b1", code: "pwd = input('Set password: ')", indent: 0 },
+                    { id: "b2", code: "while pwd != 'python123':", indent: 0 },
+                    { id: "b3", code: "print('Access Denied!')", indent: 1 },
+                    { id: "b4", code: "pwd = input('Try again: ')", indent: 1 },
+                    { id: "b5", code: "print('Access Granted!')", indent: 0 }
                 ]
             },
             {
-                id: "mod6",
-                title: "6. Comprehensive Debugging Challenge",
-                badge: "Module 6",
-                desc: "Synthesize all concepts: locate errors in a real-world multi-step Python application.",
-                questions: [
-                    {
-                        id: "m6_q1",
-                        type: "bug_spotter",
-                        title: "6.1 Student Marks & Grade System",
-                        prompt: "Click on the line containing a comparison bug that excludes student scores of exactly 50 from passing.",
-                        lines: [
-                            { text: 'scores = [45, 82, 50, 68, 30]', isBug: false },
-                            { text: 'pass_count = 0', isBug: false },
-                            { text: 'for score in scores:', isBug: false },
-                            { text: '    if score > 50:', isBug: true, reason: "`score > 50` excludes scores of exactly 50! Should be `score >= 50`." },
-                            { text: '        pass_count += 1', isBug: false },
-                            { text: 'print("Passes:", pass_count)', isBug: false }
-                        ],
-                        explanation: "`>` checks for strictly greater than. To include 50 as a passing mark, use `>=`."
-                    },
-                    {
-                        id: "m6_q2",
-                        type: "fill_blank",
-                        title: "6.2 High Score Tracking Logic",
-                        prompt: "Fill in the missing relational operator to update the `highest` score variable when a larger number is found.",
-                        code: `scores = [12, 45, 98, 64]\nhighest = scores[0]\n\nfor s in scores:\n    if s ??? highest:\n        highest = s\n\nprint("Max score:", highest)`,
-                        answers: [">"],
-                        placeholder: "operator",
-                        explanation: "We use `>` to check if the current score `s` is greater than the previously recorded `highest` score."
-                    }
+                id: "p6",
+                title: "6. Palindrome Checker",
+                desc: "Use string slicing to test if a word reads the same forwards and backwards.",
+                blocks: [
+                    { id: "b1", code: "word = input('Enter word: ').lower()", indent: 0 },
+                    { id: "b2", code: "reversed_word = word[::-1]", indent: 0 },
+                    { id: "b3", code: "if word == reversed_word:", indent: 0 },
+                    { id: "b4", code: "print('It is a palindrome!')", indent: 1 },
+                    { id: "b5", code: "else:", indent: 0 },
+                    { id: "b6", code: "print('Not a palindrome.')", indent: 1 }
                 ]
             }
         ];
 
-        // USER STATE MANAGEMENT
-        let currentModuleIndex = 0;
-        let userAttempts = {}; // { q_id: count }
-        let userAnswers = {};  // { q_id: { value, isCorrect } }
+        // TUTORIALS DATA SET
+        const tutorialsData = [
+            {
+                title: "1. Sequence & Data Types",
+                desc: "Execution order, integer, float, string, boolean, and casting functions.",
+                code: `age_str = "16"\nage = int(age_str)  # Cast to Integer\nprice = float("12.50") # Cast to Float\nprint("Age next year:", age + 1)`
+            },
+            {
+                title: "2. Selection (if / elif / else)",
+                desc: "Branching code paths using comparison (==, !=, >, <, >=, <=) and logical operators (and, or, not).",
+                code: `score = 75\nif score >= 80:\n    print("Grade A")\nelif score >= 60:\n    print("Grade B")\nelse:\n    print("Needs Practice")`
+            },
+            {
+                title: "3. Iteration (Loops)",
+                desc: "Count-controlled (for) vs condition-controlled (while) loops.",
+                code: `# For Loop (Count-controlled)\nfor i in range(1, 4):\n    print("Count:", i)\n\n# While Loop (Condition-controlled)\nn = 3\nwhile n > 0:\n    n -= 1`
+            },
+            {
+                title: "4. Lists & Arrays",
+                desc: "Storing collections of data under one name using 0-based indexing.",
+                code: `items = ["Apple", "Banana", "Cherry"]\nitems.append("Date")\nprint("First item:", items[0])\nprint("Total items:", len(items))`
+            },
+            {
+                title: "5. String Manipulation",
+                desc: "Slicing, casing (.upper(), .lower()), and string length.",
+                code: `text = "GCSE Computer Science"\nprint("Length:", len(text))\nprint("First word:", text[0:4])\nprint("Upper:", text.upper())`
+            },
+            {
+                title: "6. Functions & Scope",
+                desc: "Creating reusable code blocks with def, parameters, and return values.",
+                code: `def multiply(a, b):\n    return a * b\n\nresult = multiply(4, 5)\nprint("Product:", result)`
+            }
+        ];
 
-        // INITIALIZATION
-        window.addEventListener('DOMContentLoaded', () => {
-            loadStateFromStorage();
-            renderSidebarNav();
-            loadModule(0);
-            updateOverallProgress();
-        });
+        let activeParsonsTask = null;
+        let currentParsonsState = []; // [{ blockId, userIndent }]
 
-        // RENDER SIDEBAR NAVIGATION
-        function renderSidebarNav() {
-            const nav = document.getElementById('moduleNav');
-            nav.innerHTML = '';
+        // SWITCH TOP-LEVEL VIEWS
+        function switchView(viewName) {
+            document.getElementById('viewPractice').classList.add('hidden');
+            document.getElementById('viewParsons').classList.add('hidden');
+            document.getElementById('viewTutorials').classList.add('hidden');
+            document.getElementById('viewSandbox').classList.add('hidden');
 
-            modulesData.forEach((mod, idx) => {
-                const isSelected = idx === currentModuleIndex;
-                const stats = getModuleStats(mod);
+            document.getElementById('navTabPractice').className = "px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition";
+            document.getElementById('navTabParsons').className = "px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition";
+            document.getElementById('navTabTutorials').className = "px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition";
+            document.getElementById('navTabSandbox').className = "px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition";
 
-                const btn = document.createElement('button');
-                btn.className = `w-full text-left p-3 rounded-lg border text-sm transition flex flex-col gap-1.5 ${
-                    isSelected 
-                        ? 'bg-blue-950/70 border-blue-600/60 text-blue-200 font-medium' 
-                        : 'bg-slate-900/40 border-slate-800/80 hover:bg-slate-800/50 text-slate-300'
-                }`;
-                btn.onclick = () => loadModule(idx);
+            if (viewName === 'practice') {
+                document.getElementById('viewPractice').classList.remove('hidden');
+                document.getElementById('navTabPractice').className = "px-3 py-1.5 rounded-md bg-blue-600 text-white transition";
+            } else if (viewName === 'parsons') {
+                document.getElementById('viewParsons').classList.remove('hidden');
+                document.getElementById('navTabParsons').className = "px-3 py-1.5 rounded-md bg-amber-600 text-white transition";
+                initParsonsHub();
+            } else if (viewName === 'tutorials') {
+                document.getElementById('viewTutorials').classList.remove('hidden');
+                document.getElementById('navTabTutorials').className = "px-3 py-1.5 rounded-md bg-blue-600 text-white transition";
+                renderTutorials();
+            } else if (viewName === 'sandbox') {
+                document.getElementById('viewSandbox').classList.remove('hidden');
+                document.getElementById('navTabSandbox').className = "px-3 py-1.5 rounded-md bg-emerald-600 text-white transition";
+            }
+        }
 
-                btn.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-xs uppercase tracking-wider ${isSelected ? 'text-blue-400' : 'text-slate-400'}">${mod.badge}</span>
-                        <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded ${
-                            stats.completed === stats.total && stats.total > 0
-                                ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                                : 'bg-slate-800 text-slate-400'
-                        }">${stats.completed}/${stats.total} Done</span>
-                    </div>
-                    <div class="font-medium text-slate-200 truncate">${mod.title.split('. ')[1] || mod.title}</div>
+        // --- PARSONS HUB ENGINE ---
+        function initParsonsHub() {
+            const selector = document.getElementById('parsonsTaskSelector');
+            if (selector.options.length === 0) {
+                parsonsTasks.forEach((t, i) => {
+                    const opt = document.createElement('option');
+                    opt.value = t.id;
+                    opt.innerText = t.title;
+                    selector.appendChild(opt);
+                });
+            }
+            loadParsonsProblem(selector.value || parsonsTasks[0].id);
+        }
+
+        function loadParsonsProblem(taskId) {
+            activeParsonsTask = parsonsTasks.find(t => t.id === taskId);
+            currentParsonsState = [];
+
+            // Shuffle blocks for source bank
+            const shuffled = [...activeParsonsTask.blocks].sort(() => Math.random() - 0.5);
+
+            renderParsonsSource(shuffled);
+            renderParsonsTarget();
+            document.getElementById('parsonsFeedback').classList.add('hidden');
+        }
+
+        function renderParsonsSource(blocks) {
+            const srcContainer = document.getElementById('parsonsSource');
+            srcContainer.innerHTML = '';
+
+            blocks.forEach(b => {
+                const item = document.createElement('div');
+                item.className = "parsons-item bg-slate-900 border border-slate-700 hover:border-amber-500 rounded-lg p-2.5 font-mono text-xs text-amber-300 flex justify-between items-center transition shadow-sm";
+                item.innerHTML = `
+                    <span>${escapeHtml(b.code)}</span>
+                    <i class="fa-solid fa-arrow-right text-slate-500 hover:text-amber-400"></i>
                 `;
-
-                nav.appendChild(btn);
+                item.onclick = () => moveToTarget(b.id);
+                srcContainer.appendChild(item);
             });
         }
 
-        // LOAD SPECIFIC MODULE
-        function loadModule(index) {
-            currentModuleIndex = index;
-            const mod = modulesData[index];
+        function renderParsonsTarget() {
+            const targetContainer = document.getElementById('parsonsTarget');
+            targetContainer.innerHTML = '';
 
-            document.getElementById('moduleBadge').innerText = mod.badge;
-            document.getElementById('moduleTitle').innerText = mod.title;
-            document.getElementById('moduleDesc').innerText = mod.desc;
+            if (currentParsonsState.length === 0) {
+                targetContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-10">Click blocks from the left bank to move them here.</p>`;
+                return;
+            }
 
-            renderSidebarNav();
-            renderQuestions(mod);
-            updateModuleScoreText();
+            currentParsonsState.forEach((st, idx) => {
+                const b = activeParsonsTask.blocks.find(x => x.id === st.blockId);
+                const line = document.createElement('div');
+                line.className = "bg-slate-900 border border-slate-700 rounded-lg p-2 flex items-center justify-between gap-2 shadow-sm";
+                
+                const indentMargin = st.userIndent * 24;
+
+                line.innerHTML = `
+                    <div class="flex items-center gap-2 overflow-x-auto flex-1" style="margin-left: ${indentMargin}px">
+                        <span class="text-slate-600 font-mono text-[10px] select-none">${idx + 1}</span>
+                        <code class="font-mono text-xs text-emerald-400 whitespace-pre">${escapeHtml(b.code)}</code>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="changeIndent(${idx}, -1)" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-mono" title="Indent Out">←</button>
+                        <button onclick="changeIndent(${idx}, 1)" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-mono" title="Indent In">→</button>
+                        <button onclick="moveToSource('${b.id}')" class="px-2 py-0.5 rounded bg-rose-950/60 hover:bg-rose-900 text-rose-300 text-[10px]" title="Remove Line">✕</button>
+                    </div>
+                `;
+                targetContainer.appendChild(line);
+            });
         }
 
-        // RENDER QUESTIONS IN EDITOR AREA
-        function renderQuestions(module) {
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = '';
+        function moveToTarget(blockId) {
+            currentParsonsState.push({ blockId, userIndent: 0 });
+            // Remove from source UI
+            const remainingSource = activeParsonsTask.blocks.filter(b => !currentParsonsState.some(st => st.blockId === b.id));
+            renderParsonsSource(remainingSource);
+            renderParsonsTarget();
+        }
 
-            module.questions.forEach((q) => {
+        function moveToSource(blockId) {
+            currentParsonsState = currentParsonsState.filter(st => st.blockId !== blockId);
+            const remainingSource = activeParsonsTask.blocks.filter(b => !currentParsonsState.some(st => st.blockId === b.id));
+            renderParsonsSource(remainingSource);
+            renderParsonsTarget();
+        }
+
+        function changeIndent(index, delta) {
+            if (currentParsonsState[index]) {
+                const cur = currentParsonsState[index].userIndent;
+                currentParsonsState[index].userIndent = Math.max(0, Math.min(4, cur + delta));
+                renderParsonsTarget();
+            }
+        }
+
+        function checkParsonsSolution() {
+            const feedback = document.getElementById('parsonsFeedback');
+            feedback.classList.remove('hidden', 'bg-emerald-950/60', 'border-emerald-700', 'text-emerald-300', 'bg-rose-950/60', 'border-rose-700', 'text-rose-300');
+
+            if (currentParsonsState.length !== activeParsonsTask.blocks.length) {
+                feedback.classList.add('bg-rose-950/60', 'border', 'border-rose-700', 'text-rose-300');
+                feedback.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> You haven't used all the code blocks yet!`;
+                return;
+            }
+
+            let isLineOrderCorrect = true;
+            let isIndentCorrect = true;
+
+            currentParsonsState.forEach((st, idx) => {
+                const correctBlock = activeParsonsTask.blocks[idx];
+                if (st.blockId !== correctBlock.id) {
+                    isLineOrderCorrect = false;
+                }
+                if (st.userIndent !== correctBlock.indent) {
+                    isIndentCorrect = false;
+                }
+            });
+
+            if (isLineOrderCorrect && isIndentCorrect) {
+                feedback.classList.add('bg-emerald-950/60', 'border', 'border-emerald-700', 'text-emerald-300');
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i> <strong>Perfect Solution!</strong> The code order and Python indentation are completely correct.`;
+            } else if (!isLineOrderCorrect) {
+                feedback.classList.add('bg-rose-950/60', 'border', 'border-rose-700', 'text-rose-300');
+                feedback.innerHTML = `<i class="fa-solid fa-xmark mr-1.5"></i> <strong>Incorrect Line Order:</strong> One or more lines are placed out of sequence. Check loop and conditional logic.`;
+            } else {
+                feedback.classList.add('bg-amber-950/60', 'border', 'border-amber-700', 'text-amber-300');
+                feedback.innerHTML = `<i class="fa-solid fa-indent mr-1.5"></i> <strong>Indentation Error:</strong> The lines are in the right order, but the Python indentation levels (spacing) are incorrect.`;
+            }
+        }
+
+        // --- TUTORIALS RENDERER ---
+        function renderTutorials() {
+            const grid = document.getElementById('tutorialsGrid');
+            grid.innerHTML = '';
+
+            tutorialsData.forEach(t => {
                 const card = document.createElement('div');
-                card.id = `card_${q.id}`;
-                card.className = "bg-ideSidebar border border-slate-800 rounded-xl p-5 md:p-6 shadow-xl space-y-4";
-
-                // Header
-                let html = `
-                    <div class="flex justify-between items-start border-b border-slate-800 pb-3">
-                        <h3 class="font-bold text-slate-100 text-base md:text-lg flex items-center gap-2">
-                            <span class="text-blue-400 font-mono text-sm">[Q]</span>
-                            <span>${q.title}</span>
-                        </h3>
-                        <span id="status_${q.id}" class="text-xs font-mono px-2.5 py-1 rounded-md bg-slate-800 text-slate-400">
-                            Unanswered
-                        </span>
+                card.className = "bg-ideSidebar border border-slate-800 rounded-xl p-5 space-y-3 shadow-md flex flex-col justify-between";
+                card.innerHTML = `
+                    <div class="space-y-2">
+                        <h3 class="font-bold text-slate-100 text-lg text-blue-400">${t.title}</h3>
+                        <p class="text-xs text-slate-400">${t.desc}</p>
+                        <div class="bg-ideBg border border-slate-800 rounded-lg p-3 font-mono text-xs text-slate-200 overflow-x-auto leading-relaxed">
+                            ${formatCodeHighlight(t.code)}
+                        </div>
                     </div>
-                    <p class="text-sm text-slate-300">${q.prompt}</p>
+                    <button onclick="sendToSandbox(\`${escapeHtml(t.code)}\`)" class="mt-3 w-full bg-slate-800 hover:bg-blue-900/40 text-blue-300 border border-slate-700 hover:border-blue-700 text-xs py-2 rounded-lg transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-laptop-code"></i> Try in Sandbox
+                    </button>
                 `;
-
-                // Render code block if present
-                if (q.code) {
-                    html += `
-                        <div class="bg-ideBg border border-slate-800 rounded-lg p-3 font-mono text-xs md:text-sm text-slate-200 overflow-x-auto leading-relaxed shadow-inner">
-                            ${formatCodeHighlight(q.code)}
-                        </div>
-                    `;
-                }
-
-                // Question Types
-                if (q.type === 'mcq') {
-                    html += `<div class="space-y-2 pt-2">`;
-                    q.options.forEach((opt, oIdx) => {
-                        html += `
-                            <button onclick="handleMCQSubmit('${q.id}', ${oIdx})" class="w-full text-left p-3 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-800/60 text-xs md:text-sm text-slate-200 transition flex items-center gap-3">
-                                <span class="w-6 h-6 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-mono text-xs text-slate-400">${String.fromCharCode(65 + oIdx)}</span>
-                                <span class="flex-1">${escapeHtml(opt.text)}</span>
-                            </button>
-                        `;
-                    });
-                    html += `</div>`;
-                } 
-                else if (q.type === 'fill_blank') {
-                    html += `
-                        <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                            <input type="text" id="input_${q.id}" placeholder="${q.placeholder || 'Type missing token here...'}" class="flex-1 bg-ideBg border border-slate-700 rounded-lg px-4 py-2 text-sm font-mono text-emerald-400 focus:outline-none focus:border-blue-500 placeholder-slate-600">
-                            <button onclick="handleFillSubmit('${q.id}')" class="bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm px-5 py-2 rounded-lg transition shadow-md shadow-blue-900/20">
-                                Submit Code
-                            </button>
-                        </div>
-                    `;
-                }
-                else if (q.type === 'predict_output') {
-                    html += `
-                        <div class="space-y-2 pt-2">
-                            <label class="text-xs text-slate-400 font-mono uppercase tracking-wider">Expected Console Output:</label>
-                            <div class="flex flex-col sm:flex-row gap-3">
-                                <input type="text" id="input_${q.id}" placeholder="e.g. Result: 25" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm font-mono text-amber-300 focus:outline-none focus:border-blue-500 placeholder-slate-600">
-                                <button onclick="handlePredictSubmit('${q.id}')" class="bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm px-5 py-2 rounded-lg transition shadow-md shadow-blue-900/20">
-                                    Check Output
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-                else if (q.type === 'bug_spotter') {
-                    html += `
-                        <div class="space-y-1 bg-ideBg border border-slate-800 rounded-lg p-2 font-mono text-xs md:text-sm">
-                    `;
-                    q.lines.forEach((line, lIdx) => {
-                        html += `
-                            <div onclick="handleBugClick('${q.id}', ${lIdx})" class="code-line cursor-pointer p-2 rounded flex items-center justify-between transition border border-transparent hover:border-slate-700">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-slate-600 select-none w-5 text-right font-mono text-xs">${lIdx + 1}</span>
-                                    <span class="text-slate-200">${escapeHtml(line.text)}</span>
-                                </div>
-                                <span class="text-xs text-slate-500 opacity-0 hover:opacity-100 transition"><i class="fa-solid fa-bug"></i> Spot Error</span>
-                            </div>
-                        `;
-                    });
-                    html += `</div>`;
-                }
-
-                // Action Footer (Hint / Reveal Answer)
-                html += `
-                    <div class="flex justify-between items-center pt-3 border-t border-slate-800 text-xs">
-                        <button onclick="showHint('${q.id}')" class="text-slate-400 hover:text-amber-400 flex items-center gap-1.5 transition">
-                            <i class="fa-regular fa-lightbulb"></i> Need a Hint?
-                        </button>
-                        <button id="revealBtn_${q.id}" onclick="revealAnswer('${q.id}')" class="hidden text-amber-500 hover:underline">
-                            Reveal Model Answer
-                        </button>
-                    </div>
-                    <!-- Feedback Box -->
-                    <div id="feedback_${q.id}" class="hidden p-3 rounded-lg text-xs leading-relaxed"></div>
-                `;
-
-                card.innerHTML = html;
-                container.appendChild(card);
-
-                // Re-apply existing answer UI state if solved
-                restoreQuestionState(q);
+                grid.appendChild(card);
             });
-
-            checkModuleCompletion();
         }
 
-        // SUBMISSION HANDLERS
-        function handleMCQSubmit(qId, optionIdx) {
-            const q = findQuestion(qId);
-            const opt = q.options[optionIdx];
-            const isCorrect = opt.correct;
-            recordAttempt(qId, isCorrect);
-
-            showFeedback(qId, isCorrect, isCorrect ? "Correct! " + q.explanation : "Incorrect option. Try re-reading the question logic.");
+        function sendToSandbox(code) {
+            document.getElementById('sandboxEditor').value = code;
+            switchView('sandbox');
         }
 
-        function handleFillSubmit(qId) {
-            const q = findQuestion(qId);
-            const val = document.getElementById(`input_${qId}`).value.trim();
-            const isCorrect = q.answers.some(ans => ans.toLowerCase() === val.toLowerCase());
-            recordAttempt(qId, isCorrect);
+        // --- PYTHON SANDBOX EXECUTION SIMULATOR ---
+        function runSandboxCode() {
+            const code = document.getElementById('sandboxEditor').value;
+            const consoleBox = document.getElementById('sandboxConsole');
+            consoleBox.innerText = "";
 
-            showFeedback(qId, isCorrect, isCorrect ? "Correct! " + q.explanation : `Incorrect syntax or token. Check spacing or casing.`);
-        }
-
-        function handlePredictSubmit(qId) {
-            const q = findQuestion(qId);
-            const val = document.getElementById(`input_${qId}`).value.trim();
-            const target = q.expected.trim();
-            const isCorrect = q.caseSensitive ? val === target : val.toLowerCase() === target.toLowerCase();
-            recordAttempt(qId, isCorrect);
-
-            showFeedback(qId, isCorrect, isCorrect ? "Exact Match! " + q.explanation : "Output does not match. Watch spaces and exact strings.");
-        }
-
-        function handleBugClick(qId, lineIdx) {
-            const q = findQuestion(qId);
-            const line = q.lines[lineIdx];
-            const isCorrect = line.isBug;
-            recordAttempt(qId, isCorrect);
-
-            showFeedback(qId, isCorrect, isCorrect ? `Error Found on line ${lineIdx + 1}! ${line.reason}` : `Line ${lineIdx + 1} is valid Python syntax. Look closely at syntax or loops.`);
-        }
-
-        // RECORD ATTEMPT & UPDATE SCORE
-        function recordAttempt(qId, isCorrect) {
-            userAttempts[qId] = (userAttempts[qId] || 0) + 1;
-            
-            if (!userAnswers[qId] || !userAnswers[qId].isCorrect) {
-                userAnswers[qId] = { isCorrect: isCorrect };
-            }
-
-            saveStateToStorage();
-            updateModuleScoreText();
-            updateOverallProgress();
-
-            // Show reveal button after 2 failed attempts
-            if (!isCorrect && userAttempts[qId] >= 2) {
-                const btn = document.getElementById(`revealBtn_${qId}`);
-                if (btn) btn.classList.remove('hidden');
-            }
-        }
-
-        // FEEDBACK DISPLAY
-        function showFeedback(qId, isCorrect, text) {
-            const box = document.getElementById(`feedback_${qId}`);
-            const statusSpan = document.getElementById(`status_${qId}`);
-
-            box.classList.remove('hidden', 'bg-emerald-950/60', 'border-emerald-700/50', 'text-emerald-300', 'bg-rose-950/60', 'border-rose-700/50', 'text-rose-300');
-            
-            if (isCorrect) {
-                box.classList.add('bg-emerald-950/60', 'border', 'border-emerald-700/50', 'text-emerald-300');
-                box.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i> ${text}`;
-                statusSpan.className = "text-xs font-mono px-2.5 py-1 rounded-md bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold";
-                statusSpan.innerText = "Correct";
-            } else {
-                box.classList.add('bg-rose-950/60', 'border', 'border-rose-700/50', 'text-rose-300');
-                box.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> ${text}`;
-                statusSpan.className = "text-xs font-mono px-2.5 py-1 rounded-md bg-rose-950 text-rose-400 border border-rose-800";
-                statusSpan.innerText = "Incorrect";
-            }
-
-            checkModuleCompletion();
-        }
-
-        // RESTORE QUESTION STATE FROM STORAGE
-        function restoreQuestionState(q) {
-            const saved = userAnswers[q.id];
-            if (saved && saved.isCorrect) {
-                showFeedback(q.id, true, "Correct! " + (q.explanation || "Question answered successfully."));
-            }
-        }
-
-        // CHECK MODULE COMPLETION
-        function checkModuleCompletion() {
-            const mod = modulesData[currentModuleIndex];
-            const stats = getModuleStats(mod);
-            const card = document.getElementById('moduleCompleteCard');
-
-            if (stats.completed === stats.total && stats.total > 0) {
-                card.classList.remove('hidden');
-            } else {
-                card.classList.add('hidden');
-            }
-        }
-
-        // HINT & MODEL ANSWER MODAL
-        function showHint(qId) {
-            const q = findQuestion(qId);
-            const modal = document.getElementById('hintModal');
-            const title = document.getElementById('modalTitle');
-            const body = document.getElementById('modalBody');
-
-            title.innerHTML = `<i class="fa-solid fa-lightbulb"></i> <span>Hint for ${q.title}</span>`;
-            body.innerHTML = `
-                <p>${q.hint || q.explanation || "Re-read the question prompt carefully and verify variable types and operators."}</p>
-            `;
-            modal.classList.remove('hidden');
-        }
-
-        function revealAnswer(qId) {
-            const q = findQuestion(qId);
-            const modal = document.getElementById('hintModal');
-            const title = document.getElementById('modalTitle');
-            const body = document.getElementById('modalBody');
-
-            let modelAns = "";
-            if (q.type === 'mcq') {
-                const correct = q.options.find(o => o.correct);
-                modelAns = correct ? correct.text : "";
-            } else if (q.type === 'fill_blank') {
-                modelAns = q.answers[0];
-            } else if (q.type === 'predict_output') {
-                modelAns = q.expected;
-            } else if (q.type === 'bug_spotter') {
-                const bugLine = q.lines.find(l => l.isBug);
-                modelAns = bugLine ? `Line Bug: "${bugLine.text}" - ${bugLine.reason}` : "";
-            }
-
-            title.innerHTML = `<i class="fa-solid fa-key"></i> <span>Model Answer</span>`;
-            body.innerHTML = `
-                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-xs text-amber-300">
-                    ${escapeHtml(modelAns)}
-                </div>
-                <p class="text-xs text-slate-400 mt-2">${q.explanation}</p>
-            `;
-            modal.classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('hintModal').classList.add('hidden');
-        }
-
-        // NAVIGATION & PROGRESS CALCULATION
-        function navigateNextModule() {
-            if (currentModuleIndex < modulesData.length - 1) {
-                loadModule(currentModuleIndex + 1);
-            }
-        }
-
-        function getModuleStats(mod) {
-            let completed = 0;
-            mod.questions.forEach(q => {
-                if (userAnswers[q.id] && userAnswers[q.id].isCorrect) {
-                    completed++;
-                }
-            });
-            return { completed, total: mod.questions.length };
-        }
-
-        function updateModuleScoreText() {
-            const mod = modulesData[currentModuleIndex];
-            const stats = getModuleStats(mod);
-            document.getElementById('moduleScoreText').innerText = `${stats.completed} / ${stats.total}`;
-        }
-
-        function updateOverallProgress() {
-            let totalQ = 0;
-            let correctQ = 0;
-
-            modulesData.forEach(mod => {
-                mod.questions.forEach(q => {
-                    totalQ++;
-                    if (userAnswers[q.id] && userAnswers[q.id].isCorrect) {
-                        correctQ++;
+            try {
+                let output = [];
+                // Basic mock print evaluator
+                const customPrint = (...args) => output.push(args.join(" "));
+                
+                // Safe basic JS string evaluation for print statements
+                const lines = code.split("\n");
+                lines.forEach(line => {
+                    const trimmed = line.trim();
+                    if (trimmed.startsWith("print(")) {
+                        const inside = trimmed.substring(6, trimmed.lastIndexOf(")"));
+                        output.push(eval(inside));
                     }
                 });
-            });
 
-            const percent = totalQ === 0 ? 0 : Math.round((correctQ / totalQ) * 100);
-            document.getElementById('overallScoreText').innerText = `${correctQ} / ${totalQ} (${percent}%)`;
-            document.getElementById('overallProgressBar').style.width = `${percent}%`;
-
-            renderSidebarNav();
-        }
-
-        // TEACHER RESET
-        function resetAllProgress() {
-            if (confirm("Are you sure you want to reset all answers and scores for a new practice session?")) {
-                userAnswers = {};
-                userAttempts = {};
-                localStorage.removeItem('py_practice_userAnswers');
-                localStorage.removeItem('py_practice_userAttempts');
-                loadModule(currentModuleIndex);
-                updateOverallProgress();
-            }
-        }
-
-        // LOCAL STORAGE HELPERS
-        function saveStateToStorage() {
-            localStorage.setItem('py_practice_userAnswers', JSON.stringify(userAnswers));
-            localStorage.setItem('py_practice_userAttempts', JSON.stringify(userAttempts));
-        }
-
-        function loadStateFromStorage() {
-            const a = localStorage.getItem('py_practice_userAnswers');
-            const t = localStorage.getItem('py_practice_userAttempts');
-            if (a) userAnswers = JSON.parse(a);
-            if (t) userAttempts = JSON.parse(t);
-        }
-
-        // UTILITY HELPERS
-        function findQuestion(qId) {
-            for (let m of modulesData) {
-                for (let q of m.questions) {
-                    if (q.id === qId) return q;
+                if (output.length === 0) {
+                    consoleBox.innerText = "Program finished with 0 print outputs. Tip: Use print(...) to display results.";
+                } else {
+                    consoleBox.innerText = output.join("\n");
                 }
+            } catch (err) {
+                consoleBox.innerText = "Traceback (most recent call last):\n  SyntaxError / Evaluation Error: " + err.message;
             }
-            return null;
         }
 
-        function escapeHtml(text) {
-            return String(text)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function formatCodeHighlight(code) {
-            // Basic syntax highlighting replacement for dark IDE look
-            let escaped = escapeHtml(code);
-            return escaped
-                .replace(/(#.*)/g, '<span class="text-pythonComment italic">$1</span>')
-                .replace(/\b(def|if|elif|else|while|for|in|return|import|from|not|and|or|int|float|str|len)\b/g, '<span class="text-pythonKeyword font-bold">$1</span>')
-                .replace(/(".*?"|'.*? me')/g, '<span class="text-pythonString">$1</span>')
-                .replace(/\b(\d+)\b/g, '<span class="text-pythonNum">$1</span>');
+        function clearSandboxConsole() {
+            document.getElementById('sandboxConsole').innerText = "";
         }
     </script>
 </body>
