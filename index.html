@@ -1,9 +1,10 @@
-<!-- ... existing code ... -->
+<!DOCTYPE html>
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Year 11 GCSE Computer Science — Python One-Stop Shop & Parsons Hub</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Python Academy — GCSE Computer Science Learning Hub</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,8 +14,7 @@
                     colors: {
                         ideBg: '#1e1e1e',
                         ideSidebar: '#252526',
-                        ideEditor: '#1e1e1e',
-                        ideLineNum: '#858585',
+                        ideCard: '#2d2d2d',
                         pythonKeyword: '#569cd6',
                         pythonString: '#ce9178',
                         pythonComment: '#6a9955',
@@ -28,7 +28,7 @@
             }
         }
     </script>
-    <!-- FontAwesome for Icons -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -36,231 +36,279 @@
         ::-webkit-scrollbar-thumb { background: #3e3e42; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #555555; }
         .code-line:hover { background-color: rgba(255, 255, 255, 0.05); }
-        .parsons-item { cursor: grab; user-select: none; }
-        .parsons-item:active { cursor: grabbing; }
-        .parsons-target-zone { min-height: 260px; }
+        .parsons-block { cursor: pointer; user-select: none; }
+        .parsons-block:hover { transform: translateY(-1px); }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col">
 
-    <!-- Top Header / Bar -->
+    <!-- Top Navigation Header -->
     <header class="bg-ideSidebar border-b border-slate-800 px-4 py-3 flex flex-wrap justify-between items-center sticky top-0 z-50 shadow-md">
         <div class="flex items-center space-x-3">
-            <i class="fa-brands fa-python text-amber-400 text-3xl"></i>
+            <div class="w-10 h-10 bg-gradient-to-tr from-amber-500 to-blue-600 rounded-xl flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg">
+                <i class="fa-brands fa-python"></i>
+            </div>
             <div>
-                <h1 class="font-bold text-lg leading-tight tracking-wide text-slate-100">Python One-Stop Shop & Parsons Hub</h1>
-                <p class="text-xs text-slate-400">Year 11 GCSE Computer Science Revision & Practice Platform</p>
+                <h1 class="font-bold text-base md:text-lg leading-tight text-slate-100 flex items-center gap-2">
+                    Python GCSE Hub <span class="bg-blue-900/60 text-blue-300 border border-blue-700/50 text-[10px] px-2 py-0.5 rounded font-mono">KS4 / GCSE Prep</span>
+                </h1>
+                <p class="text-xs text-slate-400">Interactive Code Assembly, Tutorials & Debugging for 15-16 Year Olds</p>
             </div>
         </div>
 
-        <div class="flex items-center space-x-6 mt-2 sm:mt-0">
-            <!-- Navigation Tabs -->
-            <div class="flex bg-slate-900 p-1 rounded-lg border border-slate-800 text-xs font-semibold">
-                <button id="navTabPractice" onclick="switchView('practice')" class="px-3 py-1.5 rounded-md bg-blue-600 text-white transition">
-                    <i class="fa-solid fa-layer-group mr-1.5"></i>Practice Modules
+        <!-- Navigation Bar & Badges -->
+        <div class="flex flex-wrap items-center gap-2 mt-2 lg:mt-0">
+            <nav class="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+                <button id="navTut" onclick="switchTab('tutorials')" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-book-open"></i><span>Tutorials</span>
                 </button>
-                <button id="navTabParsons" onclick="switchView('parsons')" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition">
-                    <i class="fa-solid fa-puzzle-piece mr-1.5"></i>Parsons Problems
+                <button id="navParsons" onclick="switchTab('parsons')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-puzzle-piece text-amber-400"></i><span>Parsons Problems</span>
                 </button>
-                <button id="navTabTutorials" onclick="switchView('tutorials')" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition">
-                    <i class="fa-solid fa-book-open mr-1.5"></i>Tutorials
+                <button id="navDebug" onclick="switchTab('debug')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-bug text-rose-400"></i><span>Debug Lab</span>
                 </button>
-                <button id="navTabSandbox" onclick="switchView('sandbox')" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition">
-                    <i class="fa-solid fa-terminal mr-1.5"></i>Python Sandbox
+                <button id="navSandbox" onclick="switchTab('sandbox')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-terminal text-emerald-400"></i><span>Sandbox</span>
                 </button>
+            </nav>
+
+            <!-- Score Badge -->
+            <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs font-mono">
+                <i class="fa-solid fa-trophy text-amber-400"></i>
+                <span id="scoreBadgeText" class="text-emerald-400 font-bold">0 pts</span>
             </div>
 
-            <!-- Overall Progress Bar -->
-            <div class="hidden xl:flex flex-col w-36">
-                <div class="flex justify-between text-xs text-slate-300 mb-1">
-                    <span>Progress</span>
-                    <span id="overallScoreText">0 / 0 (0%)</span>
-                </div>
-                <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden border border-slate-700">
-                    <div id="overallProgressBar" class="bg-gradient-to-r from-blue-500 to-emerald-400 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <!-- Teacher Reset Button -->
-            <button onclick="resetAllProgress()" title="Reset session score and answers" class="bg-slate-800 hover:bg-rose-950 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-700 text-xs px-3 py-1.5 rounded transition flex items-center gap-1.5">
+            <!-- Reset Storage Button -->
+            <button onclick="resetUserProgress()" title="Reset saved scores" class="bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-300 border border-slate-700 hover:border-rose-700 text-xs px-2.5 py-1.5 rounded-lg transition">
                 <i class="fa-solid fa-rotate-left"></i>
-                <span class="hidden md:inline">Reset Progress</span>
             </button>
         </div>
     </header>
 
-    <!-- Main App Container -->
-    <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+    <!-- Main Content Container -->
+    <main class="flex-1 flex overflow-hidden">
 
-        <!-- VIEW 1: PRACTICE MODULES -->
-        <div id="viewPractice" class="flex-1 flex flex-col md:flex-row w-full">
-            <!-- Sidebar Navigation -->
-            <aside class="w-full md:w-72 bg-ideSidebar border-r border-slate-800 flex-shrink-0 flex flex-col">
-                <div class="p-3 uppercase text-xs font-semibold text-slate-400 tracking-wider border-b border-slate-800">
-                    Practice Modules
-                </div>
-                <nav id="moduleNav" class="flex-1 overflow-y-auto p-2 space-y-1">
-                    <!-- Nav items rendered dynamically -->
-                </nav>
-                <div class="p-3 bg-slate-900 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
-                    <span>GCSE J277 / 8525</span>
-                    <span class="bg-blue-900/60 text-blue-300 px-2 py-0.5 rounded text-[10px] font-mono border border-blue-700/50">Python 3.x</span>
-                </div>
-            </aside>
-
-            <!-- Main Content Area -->
-            <main class="flex-1 bg-ideEditor overflow-y-auto p-4 md:p-8 flex flex-col items-center">
-                <div class="w-full max-w-4xl space-y-6">
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                        <div>
-                            <span id="moduleBadge" class="inline-block bg-blue-900/40 text-blue-400 border border-blue-800 text-xs font-mono px-2.5 py-0.5 rounded-md mb-2">Module 1</span>
-                            <h2 id="moduleTitle" class="text-2xl font-bold text-slate-100">Loading Module...</h2>
-                            <p id="moduleDesc" class="text-sm text-slate-400 mt-1">Select a module to begin practicing.</p>
-                        </div>
-                        <div class="flex items-center gap-3 bg-slate-950 px-4 py-3 rounded-lg border border-slate-800 self-start sm:self-auto">
-                            <i class="fa-solid fa-trophy text-amber-400 text-xl"></i>
-                            <div>
-                                <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Module Score</div>
-                                <div id="moduleScoreText" class="text-base font-mono font-bold text-emerald-400">0 / 0</div>
-                            </div>
-                        </div>
+        <!-- SECTION 1: TUTORIALS -->
+        <section id="tabTutorials" class="flex-1 overflow-y-auto p-4 md:p-8 bg-ideBg">
+            <div class="max-w-6xl mx-auto space-y-6">
+                <!-- Welcome Banner -->
+                <div class="bg-gradient-to-r from-slate-900 via-blue-950/40 to-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="space-y-1">
+                        <span class="inline-block bg-blue-900/60 text-blue-300 border border-blue-700/50 text-[11px] font-mono px-2.5 py-0.5 rounded-md">Topic Notes & Theory</span>
+                        <h2 class="text-2xl font-bold text-white">GCSE Computer Science Python Theory</h2>
+                        <p class="text-sm text-slate-300 max-w-2xl">Interactive reference modules with code snippets. Click "Run Code in Sandbox" on any card to execute and experiment!</p>
                     </div>
-
-                    <div id="questionsContainer" class="space-y-6"></div>
-
-                    <div id="moduleCompleteCard" class="hidden bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-500/30 rounded-xl p-6 text-center space-y-3">
-                        <div class="w-12 h-12 bg-emerald-900/50 border border-emerald-500/50 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl">
-                            <i class="fa-solid fa-check"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-emerald-300">Module Completed!</h3>
-                        <p class="text-sm text-slate-300 max-w-md mx-auto">Great work! Move on to the next section or try Parsons problems.</p>
-                        <button onclick="navigateNextModule()" class="mt-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-lg font-medium text-sm transition shadow-lg shadow-emerald-900/30">
-                            Next Module <i class="fa-solid fa-arrow-right ml-1"></i>
-                        </button>
-                    </div>
-                </div>
-            </main>
-        </div>
-
-        <!-- VIEW 2: PARSONS PROBLEMS HUB -->
-        <div id="viewParsons" class="hidden flex-1 flex flex-col md:flex-row w-full bg-ideEditor overflow-y-auto p-4 md:p-8">
-            <div class="w-full max-w-6xl mx-auto space-y-6">
-                <!-- Header Banner -->
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <span class="inline-block bg-amber-900/40 text-amber-400 border border-amber-800 text-xs font-mono px-2.5 py-0.5 rounded-md mb-2">Algorithm Assembly</span>
-                        <h2 class="text-2xl font-bold text-slate-100">🧩 Interactive Parsons Problems</h2>
-                        <p class="text-sm text-slate-400 mt-1">Drag or click code blocks into your solution area. Use the indent controls to structure Python indentation correctly.</p>
-                    </div>
-                    <!-- Task Selector -->
-                    <select id="parsonsTaskSelector" onchange="loadParsonsProblem(this.value)" class="bg-slate-950 border border-slate-700 text-slate-200 text-sm rounded-lg p-2.5 font-mono focus:border-amber-500 outline-none">
-                        <!-- Populated dynamically -->
-                    </select>
-                </div>
-
-                <!-- Problem Mechanics Workspace -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Source Bank -->
-                    <div class="bg-ideSidebar border border-slate-800 rounded-xl p-5 space-y-3">
-                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                            <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-boxes-stacked text-amber-400"></i> Available Code Blocks
-                            </h3>
-                            <span class="text-xs text-slate-500">Click block to move right</span>
-                        </div>
-                        <div id="parsonsSource" class="parsons-target-zone space-y-2 bg-ideBg border border-slate-800/80 rounded-lg p-3 overflow-y-auto">
-                            <!-- Blocks rendered here -->
-                        </div>
-                    </div>
-
-                    <!-- Target Solution Area -->
-                    <div class="bg-ideSidebar border border-slate-800 rounded-xl p-5 space-y-3">
-                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                            <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-code text-emerald-400"></i> Your Solution & Indentation
-                            </h3>
-                            <button onclick="checkParsonsSolution()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs px-4 py-1.5 rounded-lg transition shadow-md shadow-emerald-900/30 flex items-center gap-1.5">
-                                <i class="fa-solid fa-play"></i> Verify Solution
-                            </button>
-                        </div>
-                        <div id="parsonsTarget" class="parsons-target-zone space-y-2 bg-ideBg border border-slate-800/80 rounded-lg p-3 overflow-y-auto">
-                            <!-- Solution lines added here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Parsons Verification Feedback -->
-                <div id="parsonsFeedback" class="hidden p-4 rounded-xl border text-sm leading-relaxed"></div>
-            </div>
-        </div>
-
-        <!-- VIEW 3: TUTORIALS HUB -->
-        <div id="viewTutorials" class="hidden flex-1 bg-ideEditor overflow-y-auto p-4 md:p-8">
-            <div class="w-full max-w-5xl mx-auto space-y-6">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg">
-                    <h2 class="text-2xl font-bold text-slate-100"><i class="fa-solid fa-book-open text-blue-400 mr-2"></i>Python Core Tutorials</h2>
-                    <p class="text-sm text-slate-400 mt-1">Comprehensive notes with runnable examples covering GCSE Computer Science specification topics.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="tutorialsGrid">
-                    <!-- Dynamic Tutorials Cards rendered here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- VIEW 4: PYTHON SANDBOX -->
-        <div id="viewSandbox" class="hidden flex-1 bg-ideEditor overflow-y-auto p-4 md:p-8 flex flex-col items-center">
-            <div class="w-full max-w-4xl space-y-4">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex justify-between items-center">
-                    <div>
-                        <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
-                            <i class="fa-solid fa-terminal text-emerald-400"></i> Live Python Simulator
-                        </h2>
-                        <p class="text-xs text-slate-400 mt-0.5">Test small scripts, variables, print statements, and basic loop constructs in real-time.</p>
-                    </div>
-                    <button onclick="runSandboxCode()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm px-5 py-2 rounded-lg transition shadow-md shadow-emerald-900/30 flex items-center gap-2">
-                        <i class="fa-solid fa-play"></i> Run Code
+                    <button onclick="switchTab('parsons')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center gap-2">
+                        <span>Try Parsons Practice</span> <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
 
-                <div class="grid grid-cols-1 gap-4">
-                    <!-- Editor Box -->
-                    <div class="bg-ideSidebar border border-slate-800 rounded-xl p-4 space-y-2">
-                        <div class="flex justify-between items-center text-xs text-slate-400 font-mono">
-                            <span>main.py</span>
-                            <span>Python 3 Interpreter</span>
-                        </div>
-                        <textarea id="sandboxEditor" rows="10" class="w-full bg-ideBg border border-slate-800 rounded-lg p-3 font-mono text-sm text-emerald-400 focus:outline-none focus:border-blue-500 leading-relaxed" placeholder="Type Python code here...&#10;print('Hello World!')"></textarea>
+                <!-- Theory Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tutorialCardsGrid">
+                    <!-- Injected via JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: PARSONS PROBLEMS ENGINE -->
+        <section id="tabParsons" class="hidden flex-1 overflow-y-auto p-4 md:p-8 bg-ideBg">
+            <div class="max-w-6xl mx-auto space-y-6">
+                <!-- Header & Task Switcher -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <span class="inline-block bg-amber-900/50 text-amber-400 border border-amber-700/50 text-[11px] font-mono px-2.5 py-0.5 rounded-md mb-2">Algorithm Assembly</span>
+                        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-puzzle-piece text-amber-400"></i> Interactive Parsons Problems
+                        </h2>
+                        <p class="text-sm text-slate-300 mt-1">Reorder scrambled blocks and adjust Python indentation levels (`← Indent Out`, `→ Indent In`).</p>
                     </div>
 
-                    <!-- Terminal Output Box -->
-                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
-                        <div class="flex justify-between items-center text-xs text-slate-400 font-mono border-b border-slate-800 pb-2">
-                            <span>Console Output:</span>
-                            <button onclick="clearSandboxConsole()" class="hover:text-slate-200"><i class="fa-solid fa-trash-can mr-1"></i>Clear</button>
+                    <!-- Problem Dropdown -->
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <label class="text-xs text-slate-400 font-mono whitespace-nowrap">Select Problem:</label>
+                        <select id="parsonsSelect" onchange="loadParsonsTask(this.value)" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-xl p-2.5 font-mono focus:border-amber-500 outline-none w-full md:w-64">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Task Description Box -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 text-sm text-slate-300 space-y-1">
+                    <div class="font-bold text-amber-400 text-xs uppercase tracking-wider font-mono">Task Objective:</div>
+                    <div id="parsonsTaskDesc" class="leading-relaxed">Select a task above to begin.</div>
+                </div>
+
+                <!-- Dual Bank Drag/Click Area -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Source Bank -->
+                    <div class="bg-ideSidebar border border-slate-800 rounded-2xl p-5 space-y-3 flex flex-col">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <h3 class="font-bold text-slate-200 text-xs uppercase tracking-wider font-mono flex items-center gap-2">
+                                <i class="fa-solid fa-boxes-stacked text-amber-400"></i> Available Blocks (Unused)
+                            </h3>
+                            <button onclick="shuffleParsonsSource()" class="text-xs text-slate-400 hover:text-white transition">
+                                <i class="fa-solid fa-shuffle mr-1"></i>Shuffle
+                            </button>
                         </div>
-                        <pre id="sandboxConsole" class="font-mono text-xs text-slate-200 min-h-[120px] max-h-[220px] overflow-y-auto whitespace-pre-wrap leading-relaxed">System ready. Click "Run Code" to execute script.</pre>
+                        <div id="parsonsSource" class="flex-1 min-h-[300px] space-y-2 bg-ideBg border border-slate-800/80 rounded-xl p-3 overflow-y-auto">
+                            <!-- Source items rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Solution Bank -->
+                    <div class="bg-ideSidebar border border-slate-800 rounded-2xl p-5 space-y-3 flex flex-col">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <h3 class="font-bold text-slate-200 text-xs uppercase tracking-wider font-mono flex items-center gap-2">
+                                <i class="fa-solid fa-code text-emerald-400"></i> Your Program & Indentation
+                            </h3>
+                            <button onclick="checkParsonsSolution()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-1.5 rounded-lg transition shadow-lg shadow-emerald-900/30 flex items-center gap-1.5">
+                                <i class="fa-solid fa-play"></i> Verify Code
+                            </button>
+                        </div>
+                        <div id="parsonsTarget" class="flex-1 min-h-[300px] space-y-2 bg-ideBg border border-slate-800/80 rounded-xl p-3 overflow-y-auto">
+                            <!-- Solution lines rendered here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verification Feedback Banner -->
+                <div id="parsonsFeedback" class="hidden p-4 rounded-xl border text-xs md:text-sm leading-relaxed"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: DEBUGGING LAB -->
+        <section id="tabDebug" class="hidden flex-1 overflow-y-auto p-4 md:p-8 bg-ideBg">
+            <div class="max-w-6xl mx-auto space-y-6">
+                <!-- Header -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex justify-between items-center">
+                    <div>
+                        <span class="inline-block bg-rose-900/50 text-rose-400 border border-rose-700/50 text-[11px] font-mono px-2.5 py-0.5 rounded-md mb-2">Code Repair Lab</span>
+                        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-bug text-rose-400"></i> Bug Spotting & Code Repair
+                        </h2>
+                        <p class="text-sm text-slate-300 mt-1">Diagnose syntax bugs, logical errors, off-by-one indices, and type mismatches.</p>
+                    </div>
+                </div>
+
+                <!-- Debugging Questions Container -->
+                <div id="debugQuestionsContainer" class="space-y-6">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: PYTHON SANDBOX / TERMINAL -->
+        <section id="tabSandbox" class="hidden flex-1 overflow-y-auto p-4 md:p-8 bg-ideBg">
+            <div class="max-w-5xl mx-auto space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-terminal text-emerald-400"></i> Interactive Python Interpreter
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Test Python code, variables, standard loops, lists, strings, and inputs in real time.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="runSandboxCode()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-lg shadow-emerald-900/30 flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Run Code
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Code Editor Box -->
+                    <div class="bg-ideSidebar border border-slate-800 rounded-2xl p-4 space-y-2 shadow-lg">
+                        <div class="flex justify-between items-center text-xs text-slate-400 font-mono border-b border-slate-800 pb-2">
+                            <span><i class="fa-regular fa-file-code mr-1.5 text-blue-400"></i>main.py</span>
+                            <span>Python 3 Simulator</span>
+                        </div>
+                        <textarea id="sandboxTextarea" rows="12" class="w-full bg-ideBg border border-slate-800 rounded-xl p-3 font-mono text-xs md:text-sm text-emerald-400 focus:outline-none focus:border-blue-500 leading-relaxed" placeholder="# Type Python code here...&#10;name = input('Enter your name: ')\nprint('Hello ' + name)"></textarea>
+                    </div>
+
+                    <!-- Console Terminal Box -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2 shadow-lg">
+                        <div class="flex justify-between items-center text-xs text-slate-400 font-mono border-b border-slate-800 pb-2">
+                            <span><i class="fa-solid fa-terminal mr-1.5 text-emerald-400"></i>Console Output</span>
+                            <button onclick="clearSandboxConsole()" class="hover:text-slate-200 transition"><i class="fa-solid fa-trash-can mr-1"></i>Clear</button>
+                        </div>
+                        <pre id="sandboxConsoleOutput" class="font-mono text-xs md:text-sm text-slate-200 min-h-[140px] max-h-[250px] overflow-y-auto whitespace-pre-wrap leading-relaxed">Python interpreter ready. Write your code above and click "Run Code".</pre>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
+    </main>
+
+    <!-- Modal for Input Prompt Simulation -->
+    <div id="inputModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-keyboard text-emerald-400"></i> Program Requesting Input
+            </h3>
+            <p id="inputModalPrompt" class="text-xs text-slate-300 font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800">Enter value:</p>
+            <input type="text" id="inputModalValue" class="w-full bg-ideBg border border-slate-700 rounded-xl px-4 py-2.5 text-sm font-mono text-emerald-400 focus:outline-none focus:border-blue-500" placeholder="Type answer here...">
+            <div class="text-right">
+                <button onclick="submitModalInput()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2 rounded-xl transition">
+                    Submit Input
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- ... existing Modal and Scripts ... -->
+    <!-- Application Core Script -->
     <script>
-        // --- PARSONS PROBLEMS DATA SET ---
+        // 1. TUTORIALS DATA
+        const tutorialsData = [
+            {
+                title: "1. Sequence & Data Types",
+                badge: "Data Types & Input",
+                desc: "Every variable stores a data type: int (whole numbers), float (decimals), str (text), or bool (True/False).",
+                code: `name = input("Name: ")\nage = int(input("Age: "))\nheight = float(input("Height (m): "))\nprint(name + " is " + str(age) + " yrs old")`
+            },
+            {
+                title: "2. Selection (if / elif / else)",
+                badge: "Decision Making",
+                desc: "Selection executes code blocks conditionally using relational operators (==, !=, >, <, >=, <=) and logical operators (and, or, not).",
+                code: `score = 75\nif score >= 80:\n    print("Grade: A")\nelif score >= 60:\n    print("Grade: B")\nelse:\n    print("Grade: C")`
+            },
+            {
+                title: "3. Count-Controlled Loops (for)",
+                badge: "Iteration",
+                desc: "A for loop repeats code a specific number of times. Use range(start, stop, step) — note that stop is excluded!",
+                code: `# Prints 1 to 5\nfor count in range(1, 6):\n    print("Number:", count)`
+            },
+            {
+                title: "4. Condition Loops (while)",
+                badge: "Iteration",
+                desc: "A while loop repeats continuously as long as a condition remains True. Be careful to prevent infinite loops!",
+                code: `secret = "python"\nguess = ""\nwhile guess != secret:\n    guess = input("Guess key: ")\nprint("Access Granted!")`
+            },
+            {
+                title: "5. Lists & 1D Arrays",
+                badge: "Data Structures",
+                desc: "Lists store multiple items under one variable using zero-based indexing. Modify with .append() and .pop().",
+                code: `scores = [45, 88, 92]\nscores.append(76) # Adds to end\nprint("First score:", scores[0])\nprint("Total count:", len(scores))`
+            },
+            {
+                title: "6. String Manipulation",
+                badge: "String Methods",
+                desc: "Strings are sequences of characters. Slice substrings using [start:stop] and alter casing using .upper() or .lower().",
+                code: `word = "ComputerScience"\nprint(word[0:8])  # "Computer"\nprint(word.lower()) # "computerscience"`
+            }
+        ];
+
+        // 2. PARSONS PROBLEMS DATA
         const parsonsTasks = [
             {
                 id: "p1",
                 title: "1. High-Low Guessing Game",
-                desc: "Reorder the blocks to build a game that generates a random secret number (1-100), loops until guessed correctly, and prints feedback.",
+                desc: "Assemble a complete guessing game that generates a random number (1-100), continuously prompts the user, and gives High/Low feedback until guessed.",
                 blocks: [
                     { id: "b1", code: "import random", indent: 0 },
                     { id: "b2", code: "secret = random.randint(1, 100)", indent: 0 },
                     { id: "b3", code: "guess = 0", indent: 0 },
                     { id: "b4", code: "while guess != secret:", indent: 0 },
-                    { id: "b5", code: "guess = int(input('Guess: '))", indent: 1 },
+                    { id: "b5", code: "guess = int(input('Enter guess: '))", indent: 1 },
                     { id: "b6", code: "if guess < secret:", indent: 1 },
                     { id: "b7", code: "print('Too Low!')", indent: 2 },
                     { id: "b8", code: "elif guess > secret:", indent: 1 },
@@ -270,8 +318,8 @@
             },
             {
                 id: "p2",
-                title: "2. Linear Search Algorithm",
-                desc: "Construct a linear search function that iterates through a list to find a target value and returns its index or -1.",
+                title: "2. Linear Search Function",
+                desc: "Construct a search algorithm that checks each item in a list sequentially and returns the index position if found, or -1 if missing.",
                 blocks: [
                     { id: "b1", code: "def linear_search(arr, target):", indent: 0 },
                     { id: "b2", code: "for i in range(len(arr)):", indent: 1 },
@@ -282,161 +330,211 @@
             },
             {
                 id: "p3",
-                title: "3. Find Maximum Value in List",
-                desc: "Assemble code that iterates through a list of numbers and returns the largest element.",
+                title: "3. Maximum Value Finder",
+                desc: "Create an algorithm that loops through a list of scores and tracks the largest value found.",
                 blocks: [
-                    { id: "b1", code: "numbers = [14, 52, 88, 31, 95, 42]", indent: 0 },
-                    { id: "b2", code: "highest = numbers[0]", indent: 0 },
-                    { id: "b3", code: "for num in numbers:", indent: 0 },
-                    { id: "b4", code: "if num > highest:", indent: 1 },
-                    { id: "b5", code: "highest = num", indent: 2 },
-                    { id: "b6", code: "print('Highest score:', highest)", indent: 0 }
+                    { id: "b1", code: "scores = [45, 89, 23, 95, 67]", indent: 0 },
+                    { id: "b2", code: "highest = scores[0]", indent: 0 },
+                    { id: "b3", code: "for s in scores:", indent: 0 },
+                    { id: "b4", code: "if s > highest:", indent: 1 },
+                    { id: "b5", code: "highest = s", indent: 2 },
+                    { id: "b6", code: "print('Highest mark:', highest)", indent: 0 }
                 ]
             },
             {
                 id: "p4",
-                title: "4. Calculate Average Score",
-                desc: "Order code to total a list of test marks and calculate the average score.",
+                title: "4. Password Strength Checker",
+                desc: "Build a program that validates if a password is at least 8 characters long and contains the character '@'.",
                 blocks: [
-                    { id: "b1", code: "marks = [65, 70, 85, 90]", indent: 0 },
-                    { id: "b2", code: "total = 0", indent: 0 },
-                    { id: "b3", code: "for m in marks:", indent: 0 },
-                    { id: "b4", code: "total = total + m", indent: 1 },
-                    { id: "b5", code: "avg = total / len(marks)", indent: 0 },
-                    { id: "b6", code: "print('Average mark:', avg)", indent: 0 }
+                    { id: "b1", code: "pwd = input('Enter password: ')", indent: 0 },
+                    { id: "b2", code: "if len(pwd) >= 8 and '@' in pwd:", indent: 0 },
+                    { id: "b3", code: "print('Strong Password')", indent: 1 },
+                    { id: "b4", code: "else:", indent: 0 },
+                    { id: "b5", code: "print('Weak Password!')", indent: 1 }
                 ]
             },
             {
                 id: "p5",
-                title: "5. Password Authenticator",
-                desc: "Create a loop that prompts for a password until the correct entry 'python123' is provided.",
+                title: "5. Even / Odd List Splitter",
+                desc: "Loop through a list of numbers and append even numbers into an 'evens' list.",
                 blocks: [
-                    { id: "b1", code: "pwd = input('Set password: ')", indent: 0 },
-                    { id: "b2", code: "while pwd != 'python123':", indent: 0 },
-                    { id: "b3", code: "print('Access Denied!')", indent: 1 },
-                    { id: "b4", code: "pwd = input('Try again: ')", indent: 1 },
-                    { id: "b5", code: "print('Access Granted!')", indent: 0 }
-                ]
-            },
-            {
-                id: "p6",
-                title: "6. Palindrome Checker",
-                desc: "Use string slicing to test if a word reads the same forwards and backwards.",
-                blocks: [
-                    { id: "b1", code: "word = input('Enter word: ').lower()", indent: 0 },
-                    { id: "b2", code: "reversed_word = word[::-1]", indent: 0 },
-                    { id: "b3", code: "if word == reversed_word:", indent: 0 },
-                    { id: "b4", code: "print('It is a palindrome!')", indent: 1 },
-                    { id: "b5", code: "else:", indent: 0 },
-                    { id: "b6", code: "print('Not a palindrome.')", indent: 1 }
+                    { id: "b1", code: "numbers = [1, 2, 3, 4, 5, 6]", indent: 0 },
+                    { id: "b2", code: "evens = []", indent: 0 },
+                    { id: "b3", code: "for n in numbers:", indent: 0 },
+                    { id: "b4", code: "if n % 2 == 0:", indent: 1 },
+                    { id: "b5", code: "evens.append(n)", indent: 2 },
+                    { id: "b6", code: "print('Evens:', evens)", indent: 0 }
                 ]
             }
         ];
 
-        // TUTORIALS DATA SET
-        const tutorialsData = [
+        // 3. DEBUG LAB DATA
+        const debugQuestions = [
             {
-                title: "1. Sequence & Data Types",
-                desc: "Execution order, integer, float, string, boolean, and casting functions.",
-                code: `age_str = "16"\nage = int(age_str)  # Cast to Integer\nprice = float("12.50") # Cast to Float\nprint("Age next year:", age + 1)`
+                id: "d1",
+                title: "1. Fix the Off-By-One Range Bug",
+                type: "bug_spotter",
+                prompt: "Click on the line containing an off-by-one bug that stops counting at 4 instead of 5.",
+                lines: [
+                    { text: "# Print numbers 1 to 5 inclusive", isBug: false },
+                    { text: "for i in range(1, 5):", isBug: true, reason: "`range(1, 5)` stops BEFORE 5. Should be `range(1, 6)` to include 5!" },
+                    { text: "    print('Count:', i)", isBug: false }
+                ],
+                explanation: "The `range(start, stop)` function excludes the stop number. To include 5, you must set the stop value to 6."
             },
             {
-                title: "2. Selection (if / elif / else)",
-                desc: "Branching code paths using comparison (==, !=, >, <, >=, <=) and logical operators (and, or, not).",
-                code: `score = 75\nif score >= 80:\n    print("Grade A")\nelif score >= 60:\n    print("Grade B")\nelse:\n    print("Needs Practice")`
+                id: "d2",
+                title: "2. Input Type Casting Repair",
+                type: "fill_blank",
+                prompt: "Complete the missing function cast token so numerical addition can be performed on input values.",
+                code: `num1 = ???(input("Enter first number: "))\nnum2 = int(input("Enter second number: "))\ntotal = num1 + num2\nprint("Total:", total)`,
+                answers: ["int", "float"],
+                placeholder: "e.g. int",
+                explanation: "`input()` always returns a string. Wrapping it in `int()` or `float()` casts the string to a number."
             },
             {
-                title: "3. Iteration (Loops)",
-                desc: "Count-controlled (for) vs condition-controlled (while) loops.",
-                code: `# For Loop (Count-controlled)\nfor i in range(1, 4):\n    print("Count:", i)\n\n# While Loop (Condition-controlled)\nn = 3\nwhile n > 0:\n    n -= 1`
-            },
-            {
-                title: "4. Lists & Arrays",
-                desc: "Storing collections of data under one name using 0-based indexing.",
-                code: `items = ["Apple", "Banana", "Cherry"]\nitems.append("Date")\nprint("First item:", items[0])\nprint("Total items:", len(items))`
-            },
-            {
-                title: "5. String Manipulation",
-                desc: "Slicing, casing (.upper(), .lower()), and string length.",
-                code: `text = "GCSE Computer Science"\nprint("Length:", len(text))\nprint("First word:", text[0:4])\nprint("Upper:", text.upper())`
-            },
-            {
-                title: "6. Functions & Scope",
-                desc: "Creating reusable code blocks with def, parameters, and return values.",
-                code: `def multiply(a, b):\n    return a * b\n\nresult = multiply(4, 5)\nprint("Product:", result)`
+                id: "d3",
+                title: "3. Predict Output Challenge",
+                type: "predict_output",
+                prompt: "What exact text will be printed to the terminal when this string slicing code executes?",
+                code: `text = "PythonCode"\nprint(text[0:6].upper())`,
+                expected: "PYTHON",
+                caseSensitive: true,
+                hint: "`text[0:6]` extracts 'Python', and `.upper()` converts it to uppercase.",
+                explanation: "`text[0:6]` retrieves characters from index 0 to 5 ('Python'). Calling `.upper()` outputs 'PYTHON'."
             }
         ];
 
+        // APP STATE persistence
+        let userScore = 0;
         let activeParsonsTask = null;
         let currentParsonsState = []; // [{ blockId, userIndent }]
+        let inputResolver = null;
 
-        // SWITCH TOP-LEVEL VIEWS
-        function switchView(viewName) {
-            document.getElementById('viewPractice').classList.add('hidden');
-            document.getElementById('viewParsons').classList.add('hidden');
-            document.getElementById('viewTutorials').classList.add('hidden');
-            document.getElementById('viewSandbox').classList.add('hidden');
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            loadScore();
+            renderTutorials();
+            initParsons();
+            renderDebugLab();
+        });
 
-            document.getElementById('navTabPractice').className = "px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition";
-            document.getElementById('navTabParsons').className = "px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition";
-            document.getElementById('navTabTutorials').className = "px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition";
-            document.getElementById('navTabSandbox').className = "px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition";
+        // SCORE MANAGEMENT
+        function loadScore() {
+            const saved = localStorage.getItem('py_hub_score');
+            if (saved) userScore = parseInt(saved, 10);
+            updateScoreDisplay();
+        }
 
-            if (viewName === 'practice') {
-                document.getElementById('viewPractice').classList.remove('hidden');
-                document.getElementById('navTabPractice').className = "px-3 py-1.5 rounded-md bg-blue-600 text-white transition";
-            } else if (viewName === 'parsons') {
-                document.getElementById('viewParsons').classList.remove('hidden');
-                document.getElementById('navTabParsons').className = "px-3 py-1.5 rounded-md bg-amber-600 text-white transition";
-                initParsonsHub();
-            } else if (viewName === 'tutorials') {
-                document.getElementById('viewTutorials').classList.remove('hidden');
-                document.getElementById('navTabTutorials').className = "px-3 py-1.5 rounded-md bg-blue-600 text-white transition";
-                renderTutorials();
-            } else if (viewName === 'sandbox') {
-                document.getElementById('viewSandbox').classList.remove('hidden');
-                document.getElementById('navTabSandbox').className = "px-3 py-1.5 rounded-md bg-emerald-600 text-white transition";
+        function addPoints(pts) {
+            userScore += pts;
+            localStorage.setItem('py_hub_score', userScore);
+            updateScoreDisplay();
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('scoreBadgeText').innerText = `${userScore} pts`;
+        }
+
+        function resetUserProgress() {
+            if (confirm("Reset all accumulated score points?")) {
+                userScore = 0;
+                localStorage.removeItem('py_hub_score');
+                updateScoreDisplay();
             }
         }
 
-        // --- PARSONS HUB ENGINE ---
-        function initParsonsHub() {
-            const selector = document.getElementById('parsonsTaskSelector');
-            if (selector.options.length === 0) {
-                parsonsTasks.forEach((t, i) => {
-                    const opt = document.createElement('option');
-                    opt.value = t.id;
-                    opt.innerText = t.title;
-                    selector.appendChild(opt);
-                });
-            }
-            loadParsonsProblem(selector.value || parsonsTasks[0].id);
+        // NAVIGATION TABS
+        function switchTab(tabName) {
+            ['Tutorials', 'Parsons', 'Debug', 'Sandbox'].forEach(t => {
+                const sec = document.getElementById(`tab${t}`);
+                const btn = document.getElementById(`nav${t}`);
+                if (t.toLowerCase() === tabName.toLowerCase()) {
+                    sec.classList.remove('hidden');
+                    btn.className = "px-3 py-1.5 rounded-lg bg-blue-600 text-white transition flex items-center gap-1.5";
+                } else {
+                    sec.classList.add('hidden');
+                    btn.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5";
+                }
+            });
         }
 
-        function loadParsonsProblem(taskId) {
+        // RENDER TUTORIALS
+        function renderTutorials() {
+            const grid = document.getElementById('tutorialCardsGrid');
+            grid.innerHTML = '';
+
+            tutorialsData.forEach(t => {
+                const card = document.createElement('div');
+                card.className = "bg-ideSidebar border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-4 hover:border-slate-700 transition";
+                card.innerHTML = `
+                    <div class="space-y-2">
+                        <span class="inline-block bg-blue-900/40 text-blue-400 border border-blue-800 text-[10px] font-mono px-2 py-0.5 rounded-md">${t.badge}</span>
+                        <h3 class="font-bold text-lg text-white">${t.title}</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">${t.desc}</p>
+                        <div class="bg-ideBg border border-slate-800 rounded-xl p-3 font-mono text-xs text-slate-200 overflow-x-auto leading-relaxed">
+                            ${formatCodeHighlight(t.code)}
+                        </div>
+                    </div>
+                    <button onclick="sendToSandbox(\`${escapeHtml(t.code)}\`)" class="w-full bg-slate-800 hover:bg-emerald-950 text-emerald-400 border border-slate-700 hover:border-emerald-700 text-xs py-2 rounded-xl font-bold transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play"></i> Run Code in Sandbox
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function sendToSandbox(code) {
+            document.getElementById('sandboxTextarea').value = code;
+            switchTab('sandbox');
+        }
+
+        // PARSONS ENGINE
+        function initParsons() {
+            const select = document.getElementById('parsonsSelect');
+            select.innerHTML = '';
+            parsonsTasks.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.innerText = t.title;
+                select.appendChild(opt);
+            });
+            loadParsonsTask(parsonsTasks[0].id);
+        }
+
+        function loadParsonsTask(taskId) {
             activeParsonsTask = parsonsTasks.find(t => t.id === taskId);
             currentParsonsState = [];
+            document.getElementById('parsonsTaskDesc').innerText = activeParsonsTask.desc;
 
-            // Shuffle blocks for source bank
-            const shuffled = [...activeParsonsTask.blocks].sort(() => Math.random() - 0.5);
-
-            renderParsonsSource(shuffled);
+            shuffleParsonsSource();
             renderParsonsTarget();
             document.getElementById('parsonsFeedback').classList.add('hidden');
+        }
+
+        function shuffleParsonsSource() {
+            const remaining = activeParsonsTask.blocks.filter(b => !currentParsonsState.some(st => st.blockId === b.id));
+            const shuffled = [...remaining].sort(() => Math.random() - 0.5);
+            renderParsonsSource(shuffled);
         }
 
         function renderParsonsSource(blocks) {
             const srcContainer = document.getElementById('parsonsSource');
             srcContainer.innerHTML = '';
 
+            if (blocks.length === 0) {
+                srcContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-10">All blocks placed in solution!</p>`;
+                return;
+            }
+
             blocks.forEach(b => {
                 const item = document.createElement('div');
-                item.className = "parsons-item bg-slate-900 border border-slate-700 hover:border-amber-500 rounded-lg p-2.5 font-mono text-xs text-amber-300 flex justify-between items-center transition shadow-sm";
+                item.className = "parsons-block bg-slate-900 border border-slate-700 hover:border-amber-500 rounded-xl p-3 font-mono text-xs text-amber-300 flex justify-between items-center transition shadow-sm";
                 item.innerHTML = `
                     <span>${escapeHtml(b.code)}</span>
-                    <i class="fa-solid fa-arrow-right text-slate-500 hover:text-amber-400"></i>
+                    <i class="fa-solid fa-circle-arrow-right text-slate-500 hover:text-amber-400 text-sm"></i>
                 `;
-                item.onclick = () => moveToTarget(b.id);
+                item.onclick = () => moveBlockToTarget(b.id);
                 srcContainer.appendChild(item);
             });
         }
@@ -446,152 +544,278 @@
             targetContainer.innerHTML = '';
 
             if (currentParsonsState.length === 0) {
-                targetContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-10">Click blocks from the left bank to move them here.</p>`;
+                targetContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-10">Click blocks from the left to construct your program here.</p>`;
                 return;
             }
 
             currentParsonsState.forEach((st, idx) => {
                 const b = activeParsonsTask.blocks.find(x => x.id === st.blockId);
                 const line = document.createElement('div');
-                line.className = "bg-slate-900 border border-slate-700 rounded-lg p-2 flex items-center justify-between gap-2 shadow-sm";
-                
-                const indentMargin = st.userIndent * 24;
+                line.className = "bg-slate-900 border border-slate-700 rounded-xl p-2 flex items-center justify-between gap-2 shadow-sm";
+
+                const indentPx = st.userIndent * 24;
 
                 line.innerHTML = `
-                    <div class="flex items-center gap-2 overflow-x-auto flex-1" style="margin-left: ${indentMargin}px">
+                    <div class="flex items-center gap-2 overflow-x-auto flex-1" style="margin-left: ${indentPx}px">
                         <span class="text-slate-600 font-mono text-[10px] select-none">${idx + 1}</span>
                         <code class="font-mono text-xs text-emerald-400 whitespace-pre">${escapeHtml(b.code)}</code>
                     </div>
-                    <div class="flex items-center gap-1">
-                        <button onclick="changeIndent(${idx}, -1)" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-mono" title="Indent Out">←</button>
-                        <button onclick="changeIndent(${idx}, 1)" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-mono" title="Indent In">→</button>
-                        <button onclick="moveToSource('${b.id}')" class="px-2 py-0.5 rounded bg-rose-950/60 hover:bg-rose-900 text-rose-300 text-[10px]" title="Remove Line">✕</button>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                        <button onclick="changeBlockIndent(${idx}, -1)" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-mono" title="Indent Out">← Out</button>
+                        <button onclick="changeBlockIndent(${idx}, 1)" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-mono" title="Indent In">In →</button>
+                        <button onclick="moveBlockToSource('${b.id}')" class="px-2 py-1 rounded-lg bg-rose-950/60 hover:bg-rose-900 text-rose-300 text-[10px]" title="Remove Line">✕</button>
                     </div>
                 `;
                 targetContainer.appendChild(line);
             });
         }
 
-        function moveToTarget(blockId) {
+        function moveBlockToTarget(blockId) {
             currentParsonsState.push({ blockId, userIndent: 0 });
-            // Remove from source UI
-            const remainingSource = activeParsonsTask.blocks.filter(b => !currentParsonsState.some(st => st.blockId === b.id));
-            renderParsonsSource(remainingSource);
+            shuffleParsonsSource();
             renderParsonsTarget();
         }
 
-        function moveToSource(blockId) {
+        function moveBlockToSource(blockId) {
             currentParsonsState = currentParsonsState.filter(st => st.blockId !== blockId);
-            const remainingSource = activeParsonsTask.blocks.filter(b => !currentParsonsState.some(st => st.blockId === b.id));
-            renderParsonsSource(remainingSource);
+            shuffleParsonsSource();
             renderParsonsTarget();
         }
 
-        function changeIndent(index, delta) {
+        function changeBlockIndent(index, delta) {
             if (currentParsonsState[index]) {
-                const cur = currentParsonsState[index].userIndent;
-                currentParsonsState[index].userIndent = Math.max(0, Math.min(4, cur + delta));
+                const val = currentParsonsState[index].userIndent + delta;
+                currentParsonsState[index].userIndent = Math.max(0, Math.min(4, val));
                 renderParsonsTarget();
             }
         }
 
         function checkParsonsSolution() {
             const feedback = document.getElementById('parsonsFeedback');
-            feedback.classList.remove('hidden', 'bg-emerald-950/60', 'border-emerald-700', 'text-emerald-300', 'bg-rose-950/60', 'border-rose-700', 'text-rose-300');
+            feedback.classList.remove('hidden', 'bg-emerald-950/70', 'border-emerald-700', 'text-emerald-300', 'bg-rose-950/70', 'border-rose-700', 'text-rose-300', 'bg-amber-950/70', 'border-amber-700', 'text-amber-300');
 
             if (currentParsonsState.length !== activeParsonsTask.blocks.length) {
-                feedback.classList.add('bg-rose-950/60', 'border', 'border-rose-700', 'text-rose-300');
-                feedback.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> You haven't used all the code blocks yet!`;
+                feedback.classList.add('bg-rose-950/70', 'border', 'border-rose-700', 'text-rose-300');
+                feedback.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> <strong>Incomplete Code:</strong> You must place all blocks into your solution before verifying.`;
                 return;
             }
 
-            let isLineOrderCorrect = true;
-            let isIndentCorrect = true;
+            let orderCorrect = true;
+            let indentCorrect = true;
 
             currentParsonsState.forEach((st, idx) => {
-                const correctBlock = activeParsonsTask.blocks[idx];
-                if (st.blockId !== correctBlock.id) {
-                    isLineOrderCorrect = false;
-                }
-                if (st.userIndent !== correctBlock.indent) {
-                    isIndentCorrect = false;
-                }
+                const targetBlock = activeParsonsTask.blocks[idx];
+                if (st.blockId !== targetBlock.id) orderCorrect = false;
+                if (st.userIndent !== targetBlock.indent) indentCorrect = false;
             });
 
-            if (isLineOrderCorrect && isIndentCorrect) {
-                feedback.classList.add('bg-emerald-950/60', 'border', 'border-emerald-700', 'text-emerald-300');
-                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i> <strong>Perfect Solution!</strong> The code order and Python indentation are completely correct.`;
-            } else if (!isLineOrderCorrect) {
-                feedback.classList.add('bg-rose-950/60', 'border', 'border-rose-700', 'text-rose-300');
-                feedback.innerHTML = `<i class="fa-solid fa-xmark mr-1.5"></i> <strong>Incorrect Line Order:</strong> One or more lines are placed out of sequence. Check loop and conditional logic.`;
+            if (orderCorrect && indentCorrect) {
+                feedback.classList.add('bg-emerald-950/70', 'border', 'border-emerald-700', 'text-emerald-300');
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i> <strong>Perfect Solution! (+15 pts)</strong> Code sequence and Python indentation levels are completely accurate.`;
+                addPoints(15);
+            } else if (!orderCorrect) {
+                feedback.classList.add('bg-rose-950/70', 'border', 'border-rose-700', 'text-rose-300');
+                feedback.innerHTML = `<i class="fa-solid fa-xmark mr-1.5"></i> <strong>Sequence Error:</strong> One or more lines are out of order. Re-check your control flow logic.`;
             } else {
-                feedback.classList.add('bg-amber-950/60', 'border', 'border-amber-700', 'text-amber-300');
-                feedback.innerHTML = `<i class="fa-solid fa-indent mr-1.5"></i> <strong>Indentation Error:</strong> The lines are in the right order, but the Python indentation levels (spacing) are incorrect.`;
+                feedback.classList.add('bg-amber-950/70', 'border', 'border-amber-700', 'text-amber-300');
+                feedback.innerHTML = `<i class="fa-solid fa-indent mr-1.5"></i> <strong>Indentation Error:</strong> The line order is correct, but your Python indentation levels (tabs/spaces) are incorrect. Use the In/Out buttons to fix!`;
             }
         }
 
-        // --- TUTORIALS RENDERER ---
-        function renderTutorials() {
-            const grid = document.getElementById('tutorialsGrid');
-            grid.innerHTML = '';
+        // DEBUG LAB ENGINE
+        function renderDebugLab() {
+            const container = document.getElementById('debugQuestionsContainer');
+            container.innerHTML = '';
 
-            tutorialsData.forEach(t => {
+            debugQuestions.forEach(q => {
                 const card = document.createElement('div');
-                card.className = "bg-ideSidebar border border-slate-800 rounded-xl p-5 space-y-3 shadow-md flex flex-col justify-between";
-                card.innerHTML = `
-                    <div class="space-y-2">
-                        <h3 class="font-bold text-slate-100 text-lg text-blue-400">${t.title}</h3>
-                        <p class="text-xs text-slate-400">${t.desc}</p>
-                        <div class="bg-ideBg border border-slate-800 rounded-lg p-3 font-mono text-xs text-slate-200 overflow-x-auto leading-relaxed">
-                            ${formatCodeHighlight(t.code)}
-                        </div>
+                card.className = "bg-ideSidebar border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4";
+
+                let html = `
+                    <div class="flex justify-between items-start border-b border-slate-800 pb-3">
+                        <h3 class="font-bold text-white text-base md:text-lg flex items-center gap-2">
+                            <span class="text-rose-400 font-mono text-sm">[Lab]</span>
+                            <span>${q.title}</span>
+                        </h3>
                     </div>
-                    <button onclick="sendToSandbox(\`${escapeHtml(t.code)}\`)" class="mt-3 w-full bg-slate-800 hover:bg-blue-900/40 text-blue-300 border border-slate-700 hover:border-blue-700 text-xs py-2 rounded-lg transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-laptop-code"></i> Try in Sandbox
-                    </button>
+                    <p class="text-xs md:text-sm text-slate-300">${q.prompt}</p>
                 `;
-                grid.appendChild(card);
+
+                if (q.type === 'bug_spotter') {
+                    html += `<div class="space-y-1 bg-ideBg border border-slate-800 rounded-xl p-3 font-mono text-xs md:text-sm">`;
+                    q.lines.forEach((l, lIdx) => {
+                        html += `
+                            <div onclick="submitBugSpotter('${q.id}', ${lIdx})" class="code-line cursor-pointer p-2 rounded-lg flex items-center justify-between transition border border-transparent hover:border-slate-700">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-slate-600 select-none w-4 font-mono text-xs">${lIdx + 1}</span>
+                                    <span class="text-slate-200">${escapeHtml(l.text)}</span>
+                                </div>
+                                <span class="text-xs text-rose-400 opacity-0 hover:opacity-100 transition"><i class="fa-solid fa-bug"></i> Spot Error</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === 'fill_blank') {
+                    html += `
+                        <div class="bg-ideBg border border-slate-800 rounded-xl p-3 font-mono text-xs text-slate-200 leading-relaxed">
+                            ${formatCodeHighlight(q.code)}
+                        </div>
+                        <div class="flex gap-3 pt-2">
+                            <input type="text" id="debugInput_${q.id}" placeholder="${q.placeholder}" class="flex-1 bg-ideBg border border-slate-700 rounded-xl px-4 py-2 text-sm font-mono text-emerald-400 focus:outline-none focus:border-blue-500">
+                            <button onclick="submitFillBlank('${q.id}')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-2 rounded-xl transition">Submit</button>
+                        </div>
+                    `;
+                } else if (q.type === 'predict_output') {
+                    html += `
+                        <div class="bg-ideBg border border-slate-800 rounded-xl p-3 font-mono text-xs text-slate-200 leading-relaxed">
+                            ${formatCodeHighlight(q.code)}
+                        </div>
+                        <div class="flex gap-3 pt-2">
+                            <input type="text" id="debugInput_${q.id}" placeholder="Type expected output..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-sm font-mono text-amber-300 focus:outline-none focus:border-blue-500">
+                            <button onclick="submitPredictOutput('${q.id}')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-2 rounded-xl transition">Check Output</button>
+                        </div>
+                    `;
+                }
+
+                html += `<div id="debugFeedback_${q.id}" class="hidden p-3 rounded-xl text-xs leading-relaxed"></div>`;
+                card.innerHTML = html;
+                container.appendChild(card);
             });
         }
 
-        function sendToSandbox(code) {
-            document.getElementById('sandboxEditor').value = code;
-            switchView('sandbox');
+        function submitBugSpotter(qId, lineIdx) {
+            const q = debugQuestions.find(x => x.id === qId);
+            const line = q.lines[lineIdx];
+            const isCorrect = line.isBug;
+            showDebugFeedback(qId, isCorrect, isCorrect ? `Bug Identified on Line ${lineIdx + 1}! ${line.reason}` : `Line ${lineIdx + 1} is valid Python code. Look again!`);
+            if (isCorrect) addPoints(10);
         }
 
-        // --- PYTHON SANDBOX EXECUTION SIMULATOR ---
-        function runSandboxCode() {
-            const code = document.getElementById('sandboxEditor').value;
-            const consoleBox = document.getElementById('sandboxConsole');
+        function submitFillBlank(qId) {
+            const q = debugQuestions.find(x => x.id === qId);
+            const val = document.getElementById(`debugInput_${qId}`).value.trim();
+            const isCorrect = q.answers.some(a => a.toLowerCase() === val.toLowerCase());
+            showDebugFeedback(qId, isCorrect, isCorrect ? `Correct! ${q.explanation}` : `Incorrect token. Try again.`);
+            if (isCorrect) addPoints(10);
+        }
+
+        function submitPredictOutput(qId) {
+            const q = debugQuestions.find(x => x.id === qId);
+            const val = document.getElementById(`debugInput_${qId}`).value.trim();
+            const isCorrect = q.caseSensitive ? val === q.expected : val.toLowerCase() === q.expected.toLowerCase();
+            showDebugFeedback(qId, isCorrect, isCorrect ? `Exact Match! ${q.explanation}` : `Output mismatch. Check exact casing.`);
+            if (isCorrect) addPoints(10);
+        }
+
+        function showDebugFeedback(qId, isCorrect, msg) {
+            const box = document.getElementById(`debugFeedback_${qId}`);
+            box.classList.remove('hidden', 'bg-emerald-950/70', 'border-emerald-700', 'text-emerald-300', 'bg-rose-950/70', 'border-rose-700', 'text-rose-300');
+            box.classList.add(isCorrect ? 'bg-emerald-950/70' : 'bg-rose-950/70', 'border', isCorrect ? 'border-emerald-700' : 'border-rose-700', isCorrect ? 'text-emerald-300' : 'text-rose-300');
+            box.innerHTML = `${isCorrect ? '<i class="fa-solid fa-circle-check mr-1.5"></i>' : '<i class="fa-solid fa-triangle-exclamation mr-1.5"></i>'} ${msg}`;
+        }
+
+        // SANDBOX PYTHON SIMULATOR
+        async function runSandboxCode() {
+            const code = document.getElementById('sandboxTextarea').value;
+            const consoleBox = document.getElementById('sandboxConsoleOutput');
             consoleBox.innerText = "";
 
-            try {
-                let output = [];
-                // Basic mock print evaluator
-                const customPrint = (...args) => output.push(args.join(" "));
-                
-                // Safe basic JS string evaluation for print statements
-                const lines = code.split("\n");
-                lines.forEach(line => {
-                    const trimmed = line.trim();
-                    if (trimmed.startsWith("print(")) {
-                        const inside = trimmed.substring(6, trimmed.lastIndexOf(")"));
-                        output.push(eval(inside));
-                    }
-                });
+            const lines = code.split('\n');
+            let vars = {};
 
-                if (output.length === 0) {
-                    consoleBox.innerText = "Program finished with 0 print outputs. Tip: Use print(...) to display results.";
-                } else {
-                    consoleBox.innerText = output.join("\n");
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (!line || line.startsWith('#')) continue;
+
+                try {
+                    // Match print(...)
+                    if (line.startsWith('print(')) {
+                        let content = line.substring(6, line.lastIndexOf(')'));
+                        let outputVal = await evaluateExpression(content, vars);
+                        consoleBox.innerText += outputVal + "\n";
+                    }
+                    // Match input assignment: var = input(...)
+                    else if (line.includes('input(')) {
+                        let parts = line.split('=');
+                        let varName = parts[0].trim();
+                        let inputCall = parts.slice(1).join('=').trim();
+                        let promptText = "Enter value:";
+                        if (inputCall.includes('input(')) {
+                            promptText = inputCall.substring(inputCall.indexOf('input(') + 6, inputCall.lastIndexOf(')')).replace(/['"]/g, '');
+                        }
+                        let userInput = await requestModalInput(promptText);
+                        if (line.includes('int(')) userInput = parseInt(userInput, 10) || 0;
+                        else if (line.includes('float(')) userInput = parseFloat(userInput) || 0.0;
+                        vars[varName] = userInput;
+                    }
+                    // Match simple assignment
+                    else if (line.includes('=')) {
+                        let parts = line.split('=');
+                        let varName = parts[0].trim();
+                        let valExpr = parts[1].trim();
+                        vars[varName] = await evaluateExpression(valExpr, vars);
+                    }
+                } catch (err) {
+                    consoleBox.innerText += `Traceback (line ${i + 1}): ${err.message}\n`;
+                    return;
                 }
-            } catch (err) {
-                consoleBox.innerText = "Traceback (most recent call last):\n  SyntaxError / Evaluation Error: " + err.message;
             }
+
+            if (!consoleBox.innerText) {
+                consoleBox.innerText = "Program executed successfully with 0 output statements.";
+            }
+        }
+
+        async function evaluateExpression(expr, vars) {
+            // Replace local variable names with actual values
+            let evalExpr = expr;
+            Object.keys(vars).forEach(v => {
+                const reg = new RegExp(`\\b${v}\\b`, 'g');
+                evalExpr = evalExpr.replace(reg, JSON.stringify(vars[v]));
+            });
+            try {
+                return Function(`"use strict"; return (${evalExpr})`)();
+            } catch (e) {
+                return expr.replace(/['"]/g, '');
+            }
+        }
+
+        function requestModalInput(promptText) {
+            return new Promise((resolve) => {
+                document.getElementById('inputModalPrompt').innerText = promptText || "Enter input:";
+                document.getElementById('inputModalValue').value = "";
+                document.getElementById('inputModal').classList.remove('hidden');
+                inputResolver = resolve;
+            });
+        }
+
+        function submitModalInput() {
+            const val = document.getElementById('inputModalValue').value;
+            document.getElementById('inputModal').classList.add('hidden');
+            if (inputResolver) inputResolver(val);
         }
 
         function clearSandboxConsole() {
-            document.getElementById('sandboxConsole').innerText = "";
+            document.getElementById('sandboxConsoleOutput').innerText = "";
+        }
+
+        // UTILS
+        function escapeHtml(text) {
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function formatCodeHighlight(code) {
+            let escaped = escapeHtml(code);
+            return escaped
+                .replace(/(#.*)/g, '<span class="text-pythonComment italic">$1</span>')
+                .replace(/\b(def|if|elif|else|while|for|in|return|import|int|float|str|len|range)\b/g, '<span class="text-pythonKeyword font-bold">$1</span>')
+                .replace(/(".*?"|'.*?')/g, '<span class="text-pythonString">$1</span>')
+                .replace(/\b(\d+)\b/g, '<span class="text-pythonNum">$1</span>');
         }
     </script>
 </body>
