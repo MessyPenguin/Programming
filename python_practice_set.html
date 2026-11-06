@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 11 Python Programming Fundamentals Practice Set</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ideBg: '#1e1e1e',
+                        ideSidebar: '#252526',
+                        ideEditor: '#1e1e1e',
+                        ideLineNum: '#858585',
+                        pythonKeyword: '#569cd6',
+                        pythonString: '#ce9178',
+                        pythonComment: '#6a9955',
+                        pythonNum: '#b5cea8',
+                        pythonFunc: '#dcdcaa'
+                    },
+                    fontFamily: {
+                        mono: ['Consolas', 'Fira Code', 'Monaco', 'Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbar for dark IDE aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3e3e42;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555555;
+        }
+        
+        .code-line:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <!-- Top Header / Bar -->
+    <header class="bg-ideSidebar border-b border-slate-800 px-4 py-3 flex flex-wrap justify-between items-center sticky top-0 z-50 shadow-md">
+        <div class="flex items-center space-x-3">
+            <i class="fa-brands fa-python text-amber-400 text-3xl"></i>
+            <div>
+                <h1 class="font-bold text-lg leading-tight tracking-wide text-slate-100">Year 11 Computer Science: Python Fundamentals</h1>
+                <p class="text-xs text-slate-400">Interactive Revision & Self-Assessment Module</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-6 mt-2 sm:mt-0">
+            <!-- Overall Progress Bar -->
+            <div class="flex flex-col w-36 sm:w-48">
+                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                    <span>Progress</span>
+                    <span id="overallScoreText">0 / 0 (0%)</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden border border-slate-700">
+                    <div id="overallProgressBar" class="bg-gradient-to-r from-blue-500 to-emerald-400 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Teacher Reset Button -->
+            <button onclick="resetAllProgress()" title="Reset session score and answers" class="bg-slate-800 hover:bg-rose-950 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-700 text-xs px-3 py-1.5 rounded transition flex items-center gap-1.5">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>Reset Progress</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+
+        <!-- Sidebar Navigation (Modules) -->
+        <aside class="w-full md:w-72 bg-ideSidebar border-r border-slate-800 flex-shrink-0 flex flex-col">
+            <div class="p-3 uppercase text-xs font-semibold text-slate-400 tracking-wider border-b border-slate-800">
+                Practice Modules
+            </div>
+            <nav id="moduleNav" class="flex-1 overflow-y-auto p-2 space-y-1">
+                <!-- Nav items rendered dynamically via Javascript -->
+            </nav>
+            <div class="p-3 bg-slate-900 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+                <span>GCSE J277 / 8525 Prep</span>
+                <span class="bg-blue-900/60 text-blue-300 px-2 py-0.5 rounded text-[10px] font-mono border border-blue-700/50">Python 3.x</span>
+            </div>
+        </aside>
+
+        <!-- Main Content Editor Area -->
+        <main class="flex-1 bg-ideEditor overflow-y-auto p-4 md:p-8 flex flex-col items-center">
+            <div class="w-full max-w-4xl space-y-6">
+
+                <!-- Module Title Banner -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                        <span id="moduleBadge" class="inline-block bg-blue-900/40 text-blue-400 border border-blue-800 text-xs font-mono px-2.5 py-0.5 rounded-md mb-2">
+                            Module 1
+                        </span>
+                        <h2 id="moduleTitle" class="text-2xl font-bold text-slate-100">Loading Module...</h2>
+                        <p id="moduleDesc" class="text-sm text-slate-400 mt-1">Select a module to begin practicing.</p>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-950 px-4 py-3 rounded-lg border border-slate-800 self-start sm:self-auto">
+                        <i class="fa-solid fa-trophy text-amber-400 text-xl"></i>
+                        <div>
+                            <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Module Score</div>
+                            <div id="moduleScoreText" class="text-base font-mono font-bold text-emerald-400">0 / 0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions Container -->
+                <div id="questionsContainer" class="space-y-6">
+                    <!-- Dynamic Questions Injected Here -->
+                </div>
+
+                <!-- Module Complete Banner (Hidden by default) -->
+                <div id="moduleCompleteCard" class="hidden bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-500/30 rounded-xl p-6 text-center space-y-3">
+                    <div class="w-12 h-12 bg-emerald-900/50 border border-emerald-500/50 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-emerald-300">Module Completed!</h3>
+                    <p class="text-sm text-slate-300 max-w-md mx-auto">Great work! You have finished all questions in this section. Move on to the next module using the sidebar.</p>
+                    <button onclick="navigateNextModule()" class="mt-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-lg font-medium text-sm transition shadow-lg shadow-emerald-900/30">
+                        Next Module <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Feedback / Solution Modal -->
+    <div id="hintModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 id="modalTitle" class="font-bold text-lg text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb"></i> <span>Hint & Solution</span>
+                </h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="modalBody" class="text-sm text-slate-300 space-y-3">
+                <!-- Modal content dynamically injected -->
+            </div>
+            <div class="pt-3 border-t border-slate-800 text-right">
+                <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-1.5 rounded-lg text-sm transition">
+                    Got it
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Data and Application Logic -->
+    <script>
+        // DATA STRUCTURE FOR MODULES & QUESTIONS
+        const modulesData = [
+            {
+                id: "mod1",
+                title: "1. Sequence & Data Types",
+                badge: "Module 1",
+                desc: "Master execution order, variable declarations, type casting, and string/integer conversions.",
+                questions: [
+                    {
+                        id: "m1_q1",
+                        type: "mcq",
+                        title: "1.1 Variable Casting and Sequence",
+                        prompt: "Examine the snippet below. What value will be printed by the final line?",
+                        code: `x = "10"\ny = "20"\ntotal = int(x) + int(y)\nprint(total)`,
+                        options: [
+                            { text: `"1020" (String concatenation)`, correct: false },
+                            { text: `30 (Integer addition)`, correct: true },
+                            { text: `TypeError (Cannot add strings and integers)`, correct: false },
+                            { text: `30.0 (Float value)`, correct: false }
+                        ],
+                        explanation: "`int(x)` converts '10' to 10 and `int(y)` converts '20' to 20. Adding two integers performs mathematical addition (10 + 20 = 30)."
+                    },
+                    {
+                        id: "m1_q2",
+                        type: "fill_blank",
+                        title: "1.2 Fixing Reordered Code (Sequence)",
+                        prompt: "The code below needs to calculate total bill with tax. Fill in the missing token to correctly cast the user input to a decimal number.",
+                        code: `# Read input and convert to decimal number\nprice = ???(input("Enter original price: "))\ntax = price * 0.20\ntotal = price + tax\nprint("Final Total:", total)`,
+                        answers: ["float"],
+                        placeholder: "e.g. int or float",
+                        explanation: "We use `float()` to cast user input into a floating-point (decimal) number so prices like 12.50 can be calculated accurately."
+                    },
+                    {
+                        id: "m1_q3",
+                        type: "predict_output",
+                        title: "1.3 Tracing Output",
+                        prompt: "What exact text will be displayed in the terminal when this code executes?",
+                        code: `a = 5\nb = 2\nc = a ** b\nprint("Result:", c)`,
+                        expected: "Result: 25",
+                        caseSensitive: true,
+                        hint: "In Python, `**` is the exponentiation (power of) operator. 5 to the power of 2 is 25.",
+                        explanation: "The `**` operator raises 5 to the power of 2, giving 25. The print statement joins 'Result:' and 25 with a space."
+                    }
+                ]
+            },
+            {
+                id: "mod2",
+                title: "2. Selection & Relational Operators",
+                badge: "Module 2",
+                desc: "Practice working with if, elif, else branches and logical/relational operators (==, !=, >=, <=).",
+                questions: [
+                    {
+                        id: "m2_q1",
+                        type: "mcq",
+                        title: "2.1 Relational Operator Logic",
+                        prompt: "Given `score = 75` and `attendance = 90`, which of the following conditions evaluates to True?",
+                        code: `score = 75\nattendance = 90`,
+                        options: [
+                            { text: `score >= 80 or attendance < 85`, correct: false },
+                            { text: `score == 75 and attendance != 90`, correct: false },
+                            { text: `not (score < 50) and attendance >= 90`, correct: true },
+                            { text: `score > 75 or attendance > 95`, correct: false }
+                        ],
+                        explanation: "`score < 50` is False, so `not (False)` becomes True. `attendance >= 90` is also True. True and True evaluates to True."
+                    },
+                    {
+                        id: "m2_q2",
+                        type: "fill_blank",
+                        title: "2.2 Theme Park Ticket Classifier",
+                        prompt: "Complete the conditional statement so that teenagers aged 13 up to 17 (inclusive) receive a child ticket.",
+                        code: `age = int(input("Enter age: "))\n\nif age < 13:\n    category = "Child"\nelif age ??? 17:\n    category = "Teenager"\nelse:\n    category = "Adult"`,
+                        answers: ["<=", "<= 17"],
+                        placeholder: "e.g. <=",
+                        explanation: "Using `<=` checks if the age is less than or equal to 17."
+                    },
+                    {
+                        id: "m2_q3",
+                        type: "bug_spotter",
+                        title: "2.3 Debugging Selection Syntax",
+                        prompt: "Click on the line of code that contains a syntax error.",
+                        lines: [
+                            { text: 'user_pass = input("Enter password: ")', isBug: false },
+                            { text: 'if user_pass == "admin123"', isBug: true, reason: "Missing colon `:` at the end of the `if` statement!" },
+                            { text: '    print("Access Granted!")', isBug: false },
+                            { text: 'else:', isBug: false },
+                            { text: '    print("Access Denied")', isBug: false }
+                        ],
+                        explanation: "Every `if`, `elif`, and `else` line in Python must end with a colon `:`."
+                    }
+                ]
+            },
+            {
+                id: "mod3",
+                title: "3. Iteration (For & While Loops)",
+                badge: "Module 3",
+                desc: "Master count-controlled (for) and condition-controlled (while) loops along with range() boundaries.",
+                questions: [
+                    {
+                        id: "m3_q1",
+                        type: "predict_output",
+                        title: "3.1 Range Boundary Check",
+                        prompt: "How many total lines of output will this `for` loop print?",
+                        code: `for i in range(1, 6):\n    print("Iteration:", i)`,
+                        expected: "5",
+                        caseSensitive: false,
+                        hint: "`range(1, 6)` starts at 1 and stops BEFORE 6 (generating values: 1, 2, 3, 4, 5).",
+                        explanation: "`range(1, 6)` produces 5 numbers: 1, 2, 3, 4, and 5. Therefore, the loop runs 5 times."
+                    },
+                    {
+                        id: "m3_q2",
+                        type: "fill_blank",
+                        title: "3.2 Fixing an Infinite While Loop",
+                        prompt: "Fill in the blank so the while loop terminates when the secret number (7) is guessed.",
+                        code: `secret = 7\nguess = int(input("Guess number: "))\n\n# Loop while guess is NOT equal to secret\nwhile guess ??? secret:\n    print("Wrong! Try again.")\n    guess = int(input("Guess number: "))\n\nprint("Correct!")`,
+                        answers: ["!=", "!= secret"],
+                        placeholder: "operator",
+                        explanation: "`!=` means 'not equal to'. The loop continues asking as long as the user's guess is not equal to 7."
+                    },
+                    {
+                        id: "m3_q3",
+                        type: "bug_spotter",
+                        title: "3.3 Accumulator Pattern Bug",
+                        prompt: "Click on the line causing a logical error where the total score is reset inside the loop.",
+                        lines: [
+                            { text: 'scores = [10, 20, 30]', isBug: false },
+                            { text: 'for score in scores:', isBug: false },
+                            { text: '    total = 0', isBug: true, reason: "`total = 0` should be declared OUTSIDE the loop. Resetting it inside wipes previous totals every iteration!" },
+                            { text: '    total = total + score', isBug: false },
+                            { text: 'print("Sum:", total)', isBug: false }
+                        ],
+                        explanation: "Initializing `total = 0` inside the loop causes it to reset back to zero on every iteration, failing to accumulate the sum."
+                    }
+                ]
+            },
+            {
+                id: "mod4",
+                title: "4. Lists & 1D Arrays",
+                badge: "Module 4",
+                desc: "Work with zero-based indexing, list appending, element deletion, and list length functions.",
+                questions: [
+                    {
+                        id: "m4_q1",
+                        type: "mcq",
+                        title: "4.1 Zero-Based Index Lookup",
+                        prompt: "Given `colors = ['Red', 'Green', 'Blue', 'Yellow']`, what does `colors[2]` evaluate to?",
+                        code: `colors = ["Red", "Green", "Blue", "Yellow"]\nprint(colors[2])`,
+                        options: [
+                            { text: `"Red"`, correct: false },
+                            { text: `"Green"`, correct: false },
+                            { text: `"Blue"`, correct: true },
+                            { text: `"Yellow"`, correct: false }
+                        ],
+                        explanation: "Lists are 0-indexed: index 0 is 'Red', index 1 is 'Green', index 2 is 'Blue'."
+                    },
+                    {
+                        id: "m4_q2",
+                        type: "fill_blank",
+                        title: "4.2 Appending List Items",
+                        prompt: "Fill in the missing list method name to add 'Python' to the programming languages list.",
+                        code: `languages = ["HTML", "CSS"]\nlanguages.???("Python")\nprint(len(languages)) # Outputs 3`,
+                        answers: ["append"],
+                        placeholder: "method name",
+                        explanation: "The `.append(item)` method adds a new element to the end of a list."
+                    },
+                    {
+                        id: "m4_q3",
+                        type: "predict_output",
+                        title: "4.3 List Modification Output",
+                        prompt: "What exact string output will be printed after `pop()` removes an element?",
+                        code: `items = ["A", "B", "C", "D"]\nitems.pop(1)\nprint(items[1])`,
+                        expected: "C",
+                        caseSensitive: true,
+                        hint: "`pop(1)` removes the item at index 1 ('B'). What item moves into index 1 afterwards?",
+                        explanation: "Original list: ['A', 'B', 'C', 'D']. After `pop(1)` removes 'B', the remaining list is ['A', 'C', 'D']. Now `items[1]` is 'C'."
+                    }
+                ]
+            },
+            {
+                id: "mod5",
+                title: "5. String Manipulation",
+                badge: "Module 5",
+                desc: "Practice string slicing [start:stop], uppercase/lowercase conversion, and character counts.",
+                questions: [
+                    {
+                        id: "m5_q1",
+                        type: "predict_output",
+                        title: "5.1 String Slicing [start:stop]",
+                        prompt: "What will be printed by the slice `text[0:4]`?",
+                        code: `text = "Computer Science"\nprint(text[0:4])`,
+                        expected: "Comp",
+                        caseSensitive: true,
+                        hint: "Slicing starts at index 0 and stops BEFORE index 4 (indices 0, 1, 2, 3).",
+                        explanation: "Indices 0, 1, 2, 3 correspond to 'C', 'o', 'm', 'p'."
+                    },
+                    {
+                        id: "m5_q2",
+                        type: "fill_blank",
+                        title: "5.2 Case Normalization",
+                        prompt: "Fill in the missing method to convert user input into lowercase characters for safe comparison.",
+                        code: `answer = input("Continue? (yes/no): ")\nclean_answer = answer.???()\nif clean_answer == "yes":\n    print("Proceeding...")`,
+                        answers: ["lower", "lower()"],
+                        placeholder: "e.g. lower()",
+                        explanation: "The `.lower()` method converts all letters in a string to lowercase."
+                    },
+                    {
+                        id: "m5_q3",
+                        type: "bug_spotter",
+                        title: "5.3 Concatenation Type Bug",
+                        prompt: "Click on the line causing a TypeError when generating a profile string.",
+                        lines: [
+                            { text: 'name = "Alex"', isBug: false },
+                            { text: 'age = 16', isBug: false },
+                            { text: 'msg = name + " is " + age + " years old"', isBug: true, reason: "Cannot concatenate a string (`str`) and integer (`age = 16`). Must cast with `str(age)`!" },
+                            { text: 'print(msg)', isBug: false }
+                        ],
+                        explanation: "In Python, you cannot directly concatenate strings with numbers. `age` must be converted using `str(age)`."
+                    }
+                ]
+            },
+            {
+                id: "mod6",
+                title: "6. Comprehensive Debugging Challenge",
+                badge: "Module 6",
+                desc: "Synthesize all concepts: locate errors in a real-world multi-step Python application.",
+                questions: [
+                    {
+                        id: "m6_q1",
+                        type: "bug_spotter",
+                        title: "6.1 Student Marks & Grade System",
+                        prompt: "Click on the line containing a comparison bug that excludes student scores of exactly 50 from passing.",
+                        lines: [
+                            { text: 'scores = [45, 82, 50, 68, 30]', isBug: false },
+                            { text: 'pass_count = 0', isBug: false },
+                            { text: 'for score in scores:', isBug: false },
+                            { text: '    if score > 50:', isBug: true, reason: "`score > 50` excludes scores of exactly 50! Should be `score >= 50`." },
+                            { text: '        pass_count += 1', isBug: false },
+                            { text: 'print("Passes:", pass_count)', isBug: false }
+                        ],
+                        explanation: "`>` checks for strictly greater than. To include 50 as a passing mark, use `>=`."
+                    },
+                    {
+                        id: "m6_q2",
+                        type: "fill_blank",
+                        title: "6.2 High Score Tracking Logic",
+                        prompt: "Fill in the missing relational operator to update the `highest` score variable when a larger number is found.",
+                        code: `scores = [12, 45, 98, 64]\nhighest = scores[0]\n\nfor s in scores:\n    if s ??? highest:\n        highest = s\n\nprint("Max score:", highest)`,
+                        answers: [">"],
+                        placeholder: "operator",
+                        explanation: "We use `>` to check if the current score `s` is greater than the previously recorded `highest` score."
+                    }
+                ]
+            }
+        ];
+
+        // USER STATE MANAGEMENT
+        let currentModuleIndex = 0;
+        let userAttempts = {}; // { q_id: count }
+        let userAnswers = {};  // { q_id: { value, isCorrect } }
+
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStateFromStorage();
+            renderSidebarNav();
+            loadModule(0);
+            updateOverallProgress();
+        });
+
+        // RENDER SIDEBAR NAVIGATION
+        function renderSidebarNav() {
+            const nav = document.getElementById('moduleNav');
+            nav.innerHTML = '';
+
+            modulesData.forEach((mod, idx) => {
+                const isSelected = idx === currentModuleIndex;
+                const stats = getModuleStats(mod);
+
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-3 rounded-lg border text-sm transition flex flex-col gap-1.5 ${
+                    isSelected 
+                        ? 'bg-blue-950/70 border-blue-600/60 text-blue-200 font-medium' 
+                        : 'bg-slate-900/40 border-slate-800/80 hover:bg-slate-800/50 text-slate-300'
+                }`;
+                btn.onclick = () => loadModule(idx);
+
+                btn.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-xs uppercase tracking-wider ${isSelected ? 'text-blue-400' : 'text-slate-400'}">${mod.badge}</span>
+                        <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded ${
+                            stats.completed === stats.total && stats.total > 0
+                                ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+                                : 'bg-slate-800 text-slate-400'
+                        }">${stats.completed}/${stats.total} Done</span>
+                    </div>
+                    <div class="font-medium text-slate-200 truncate">${mod.title.split('. ')[1] || mod.title}</div>
+                `;
+
+                nav.appendChild(btn);
+            });
+        }
+
+        // LOAD SPECIFIC MODULE
+        function loadModule(index) {
+            currentModuleIndex = index;
+            const mod = modulesData[index];
+
+            document.getElementById('moduleBadge').innerText = mod.badge;
+            document.getElementById('moduleTitle').innerText = mod.title;
+            document.getElementById('moduleDesc').innerText = mod.desc;
+
+            renderSidebarNav();
+            renderQuestions(mod);
+            updateModuleScoreText();
+        }
+
+        // RENDER QUESTIONS IN EDITOR AREA
+        function renderQuestions(module) {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            module.questions.forEach((q) => {
+                const card = document.createElement('div');
+                card.id = `card_${q.id}`;
+                card.className = "bg-ideSidebar border border-slate-800 rounded-xl p-5 md:p-6 shadow-xl space-y-4";
+
+                // Header
+                let html = `
+                    <div class="flex justify-between items-start border-b border-slate-800 pb-3">
+                        <h3 class="font-bold text-slate-100 text-base md:text-lg flex items-center gap-2">
+                            <span class="text-blue-400 font-mono text-sm">[Q]</span>
+                            <span>${q.title}</span>
+                        </h3>
+                        <span id="status_${q.id}" class="text-xs font-mono px-2.5 py-1 rounded-md bg-slate-800 text-slate-400">
+                            Unanswered
+                        </span>
+                    </div>
+                    <p class="text-sm text-slate-300">${q.prompt}</p>
+                `;
+
+                // Render code block if present
+                if (q.code) {
+                    html += `
+                        <div class="bg-ideBg border border-slate-800 rounded-lg p-3 font-mono text-xs md:text-sm text-slate-200 overflow-x-auto leading-relaxed shadow-inner">
+                            ${formatCodeHighlight(q.code)}
+                        </div>
+                    `;
+                }
+
+                // Question Types
+                if (q.type === 'mcq') {
+                    html += `<div class="space-y-2 pt-2">`;
+                    q.options.forEach((opt, oIdx) => {
+                        html += `
+                            <button onclick="handleMCQSubmit('${q.id}', ${oIdx})" class="w-full text-left p-3 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-800/60 text-xs md:text-sm text-slate-200 transition flex items-center gap-3">
+                                <span class="w-6 h-6 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-mono text-xs text-slate-400">${String.fromCharCode(65 + oIdx)}</span>
+                                <span class="flex-1">${escapeHtml(opt.text)}</span>
+                            </button>
+                        `;
+                    });
+                    html += `</div>`;
+                } 
+                else if (q.type === 'fill_blank') {
+                    html += `
+                        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                            <input type="text" id="input_${q.id}" placeholder="${q.placeholder || 'Type missing token here...'}" class="flex-1 bg-ideBg border border-slate-700 rounded-lg px-4 py-2 text-sm font-mono text-emerald-400 focus:outline-none focus:border-blue-500 placeholder-slate-600">
+                            <button onclick="handleFillSubmit('${q.id}')" class="bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm px-5 py-2 rounded-lg transition shadow-md shadow-blue-900/20">
+                                Submit Code
+                            </button>
+                        </div>
+                    `;
+                }
+                else if (q.type === 'predict_output') {
+                    html += `
+                        <div class="space-y-2 pt-2">
+                            <label class="text-xs text-slate-400 font-mono uppercase tracking-wider">Expected Console Output:</label>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <input type="text" id="input_${q.id}" placeholder="e.g. Result: 25" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm font-mono text-amber-300 focus:outline-none focus:border-blue-500 placeholder-slate-600">
+                                <button onclick="handlePredictSubmit('${q.id}')" class="bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm px-5 py-2 rounded-lg transition shadow-md shadow-blue-900/20">
+                                    Check Output
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                else if (q.type === 'bug_spotter') {
+                    html += `
+                        <div class="space-y-1 bg-ideBg border border-slate-800 rounded-lg p-2 font-mono text-xs md:text-sm">
+                    `;
+                    q.lines.forEach((line, lIdx) => {
+                        html += `
+                            <div onclick="handleBugClick('${q.id}', ${lIdx})" class="code-line cursor-pointer p-2 rounded flex items-center justify-between transition border border-transparent hover:border-slate-700">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-slate-600 select-none w-5 text-right font-mono text-xs">${lIdx + 1}</span>
+                                    <span class="text-slate-200">${escapeHtml(line.text)}</span>
+                                </div>
+                                <span class="text-xs text-slate-500 opacity-0 hover:opacity-100 transition"><i class="fa-solid fa-bug"></i> Spot Error</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                // Action Footer (Hint / Reveal Answer)
+                html += `
+                    <div class="flex justify-between items-center pt-3 border-t border-slate-800 text-xs">
+                        <button onclick="showHint('${q.id}')" class="text-slate-400 hover:text-amber-400 flex items-center gap-1.5 transition">
+                            <i class="fa-regular fa-lightbulb"></i> Need a Hint?
+                        </button>
+                        <button id="revealBtn_${q.id}" onclick="revealAnswer('${q.id}')" class="hidden text-amber-500 hover:underline">
+                            Reveal Model Answer
+                        </button>
+                    </div>
+                    <!-- Feedback Box -->
+                    <div id="feedback_${q.id}" class="hidden p-3 rounded-lg text-xs leading-relaxed"></div>
+                `;
+
+                card.innerHTML = html;
+                container.appendChild(card);
+
+                // Re-apply existing answer UI state if solved
+                restoreQuestionState(q);
+            });
+
+            checkModuleCompletion();
+        }
+
+        // SUBMISSION HANDLERS
+        function handleMCQSubmit(qId, optionIdx) {
+            const q = findQuestion(qId);
+            const opt = q.options[optionIdx];
+            const isCorrect = opt.correct;
+            recordAttempt(qId, isCorrect);
+
+            showFeedback(qId, isCorrect, isCorrect ? "Correct! " + q.explanation : "Incorrect option. Try re-reading the question logic.");
+        }
+
+        function handleFillSubmit(qId) {
+            const q = findQuestion(qId);
+            const val = document.getElementById(`input_${qId}`).value.trim();
+            const isCorrect = q.answers.some(ans => ans.toLowerCase() === val.toLowerCase());
+            recordAttempt(qId, isCorrect);
+
+            showFeedback(qId, isCorrect, isCorrect ? "Correct! " + q.explanation : `Incorrect syntax or token. Check spacing or casing.`);
+        }
+
+        function handlePredictSubmit(qId) {
+            const q = findQuestion(qId);
+            const val = document.getElementById(`input_${qId}`).value.trim();
+            const target = q.expected.trim();
+            const isCorrect = q.caseSensitive ? val === target : val.toLowerCase() === target.toLowerCase();
+            recordAttempt(qId, isCorrect);
+
+            showFeedback(qId, isCorrect, isCorrect ? "Exact Match! " + q.explanation : "Output does not match. Watch spaces and exact strings.");
+        }
+
+        function handleBugClick(qId, lineIdx) {
+            const q = findQuestion(qId);
+            const line = q.lines[lineIdx];
+            const isCorrect = line.isBug;
+            recordAttempt(qId, isCorrect);
+
+            showFeedback(qId, isCorrect, isCorrect ? `Error Found on line ${lineIdx + 1}! ${line.reason}` : `Line ${lineIdx + 1} is valid Python syntax. Look closely at syntax or loops.`);
+        }
+
+        // RECORD ATTEMPT & UPDATE SCORE
+        function recordAttempt(qId, isCorrect) {
+            userAttempts[qId] = (userAttempts[qId] || 0) + 1;
+            
+            if (!userAnswers[qId] || !userAnswers[qId].isCorrect) {
+                userAnswers[qId] = { isCorrect: isCorrect };
+            }
+
+            saveStateToStorage();
+            updateModuleScoreText();
+            updateOverallProgress();
+
+            // Show reveal button after 2 failed attempts
+            if (!isCorrect && userAttempts[qId] >= 2) {
+                const btn = document.getElementById(`revealBtn_${qId}`);
+                if (btn) btn.classList.remove('hidden');
+            }
+        }
+
+        // FEEDBACK DISPLAY
+        function showFeedback(qId, isCorrect, text) {
+            const box = document.getElementById(`feedback_${qId}`);
+            const statusSpan = document.getElementById(`status_${qId}`);
+
+            box.classList.remove('hidden', 'bg-emerald-950/60', 'border-emerald-700/50', 'text-emerald-300', 'bg-rose-950/60', 'border-rose-700/50', 'text-rose-300');
+            
+            if (isCorrect) {
+                box.classList.add('bg-emerald-950/60', 'border', 'border-emerald-700/50', 'text-emerald-300');
+                box.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i> ${text}`;
+                statusSpan.className = "text-xs font-mono px-2.5 py-1 rounded-md bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold";
+                statusSpan.innerText = "Correct";
+            } else {
+                box.classList.add('bg-rose-950/60', 'border', 'border-rose-700/50', 'text-rose-300');
+                box.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> ${text}`;
+                statusSpan.className = "text-xs font-mono px-2.5 py-1 rounded-md bg-rose-950 text-rose-400 border border-rose-800";
+                statusSpan.innerText = "Incorrect";
+            }
+
+            checkModuleCompletion();
+        }
+
+        // RESTORE QUESTION STATE FROM STORAGE
+        function restoreQuestionState(q) {
+            const saved = userAnswers[q.id];
+            if (saved && saved.isCorrect) {
+                showFeedback(q.id, true, "Correct! " + (q.explanation || "Question answered successfully."));
+            }
+        }
+
+        // CHECK MODULE COMPLETION
+        function checkModuleCompletion() {
+            const mod = modulesData[currentModuleIndex];
+            const stats = getModuleStats(mod);
+            const card = document.getElementById('moduleCompleteCard');
+
+            if (stats.completed === stats.total && stats.total > 0) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        }
+
+        // HINT & MODEL ANSWER MODAL
+        function showHint(qId) {
+            const q = findQuestion(qId);
+            const modal = document.getElementById('hintModal');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+
+            title.innerHTML = `<i class="fa-solid fa-lightbulb"></i> <span>Hint for ${q.title}</span>`;
+            body.innerHTML = `
+                <p>${q.hint || q.explanation || "Re-read the question prompt carefully and verify variable types and operators."}</p>
+            `;
+            modal.classList.remove('hidden');
+        }
+
+        function revealAnswer(qId) {
+            const q = findQuestion(qId);
+            const modal = document.getElementById('hintModal');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+
+            let modelAns = "";
+            if (q.type === 'mcq') {
+                const correct = q.options.find(o => o.correct);
+                modelAns = correct ? correct.text : "";
+            } else if (q.type === 'fill_blank') {
+                modelAns = q.answers[0];
+            } else if (q.type === 'predict_output') {
+                modelAns = q.expected;
+            } else if (q.type === 'bug_spotter') {
+                const bugLine = q.lines.find(l => l.isBug);
+                modelAns = bugLine ? `Line Bug: "${bugLine.text}" - ${bugLine.reason}` : "";
+            }
+
+            title.innerHTML = `<i class="fa-solid fa-key"></i> <span>Model Answer</span>`;
+            body.innerHTML = `
+                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-xs text-amber-300">
+                    ${escapeHtml(modelAns)}
+                </div>
+                <p class="text-xs text-slate-400 mt-2">${q.explanation}</p>
+            `;
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('hintModal').classList.add('hidden');
+        }
+
+        // NAVIGATION & PROGRESS CALCULATION
+        function navigateNextModule() {
+            if (currentModuleIndex < modulesData.length - 1) {
+                loadModule(currentModuleIndex + 1);
+            }
+        }
+
+        function getModuleStats(mod) {
+            let completed = 0;
+            mod.questions.forEach(q => {
+                if (userAnswers[q.id] && userAnswers[q.id].isCorrect) {
+                    completed++;
+                }
+            });
+            return { completed, total: mod.questions.length };
+        }
+
+        function updateModuleScoreText() {
+            const mod = modulesData[currentModuleIndex];
+            const stats = getModuleStats(mod);
+            document.getElementById('moduleScoreText').innerText = `${stats.completed} / ${stats.total}`;
+        }
+
+        function updateOverallProgress() {
+            let totalQ = 0;
+            let correctQ = 0;
+
+            modulesData.forEach(mod => {
+                mod.questions.forEach(q => {
+                    totalQ++;
+                    if (userAnswers[q.id] && userAnswers[q.id].isCorrect) {
+                        correctQ++;
+                    }
+                });
+            });
+
+            const percent = totalQ === 0 ? 0 : Math.round((correctQ / totalQ) * 100);
+            document.getElementById('overallScoreText').innerText = `${correctQ} / ${totalQ} (${percent}%)`;
+            document.getElementById('overallProgressBar').style.width = `${percent}%`;
+
+            renderSidebarNav();
+        }
+
+        // TEACHER RESET
+        function resetAllProgress() {
+            if (confirm("Are you sure you want to reset all answers and scores for a new practice session?")) {
+                userAnswers = {};
+                userAttempts = {};
+                localStorage.removeItem('py_practice_userAnswers');
+                localStorage.removeItem('py_practice_userAttempts');
+                loadModule(currentModuleIndex);
+                updateOverallProgress();
+            }
+        }
+
+        // LOCAL STORAGE HELPERS
+        function saveStateToStorage() {
+            localStorage.setItem('py_practice_userAnswers', JSON.stringify(userAnswers));
+            localStorage.setItem('py_practice_userAttempts', JSON.stringify(userAttempts));
+        }
+
+        function loadStateFromStorage() {
+            const a = localStorage.getItem('py_practice_userAnswers');
+            const t = localStorage.getItem('py_practice_userAttempts');
+            if (a) userAnswers = JSON.parse(a);
+            if (t) userAttempts = JSON.parse(t);
+        }
+
+        // UTILITY HELPERS
+        function findQuestion(qId) {
+            for (let m of modulesData) {
+                for (let q of m.questions) {
+                    if (q.id === qId) return q;
+                }
+            }
+            return null;
+        }
+
+        function escapeHtml(text) {
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function formatCodeHighlight(code) {
+            // Basic syntax highlighting replacement for dark IDE look
+            let escaped = escapeHtml(code);
+            return escaped
+                .replace(/(#.*)/g, '<span class="text-pythonComment italic">$1</span>')
+                .replace(/\b(def|if|elif|else|while|for|in|return|import|from|not|and|or|int|float|str|len)\b/g, '<span class="text-pythonKeyword font-bold">$1</span>')
+                .replace(/(".*?"|'.*? me')/g, '<span class="text-pythonString">$1</span>')
+                .replace(/\b(\d+)\b/g, '<span class="text-pythonNum">$1</span>');
+        }
+    </script>
+</body>
+</html>
